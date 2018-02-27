@@ -1,6 +1,8 @@
 # Processing of the BLISS sequencing results
 # this script can be called as
-# bliss_main_kf.sh infastq inputdir refgenome pydir
+# bliss_main_kf.sh infastq inputdir whitelist refgenome pydir quality
+
+# INPUTS
 inputdir = $1		# full path to the fastq file
 infastq = $2		# the name of the gz compressed fastq file without the ".gz" ending (e.i. rm31.fastq)
 WL = $3				# the name of the file containing a list of the experiment barcodes (one barcode per line, no header)
@@ -8,6 +10,14 @@ refgenome = $4		# full path to reference genome fastq file or fasta file if it h
 pydir = $5			# full path to the mismatchmaker.py file
 q = $6				# mapping quality threshold for filtering
 
+# DEPENDENCIES
+# umi_tools
+# samtools
+# bwa mem
+# python3
+# matchmaker.py
+
+# CODE
 # unzipping the fastq file of interest
 gunzip $inputdir"/"$infastq".gz"
 # retrieving the run ID
@@ -29,7 +39,7 @@ samtools view -Sb -q $q $name"_ft_mp.sam" > $name"_ft_mp.bam"
 samtools sort $name"_ft_mp.bam" -o $name"_ft_mp_srt.bam"
 samtools index $name"_ft_mp_srt.bam"
 
-# groupping the UMIs with umi_tools
+# grouping the UMIs with umi_tools
 umi_tools group -I $name"_ft_mp_srt.bam" --group-out=groups.tsv --per-cell --output-bam -S $name"_ft_mp_srt_gp.bam"
 
 # converting final bam to sam
