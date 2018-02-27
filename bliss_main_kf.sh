@@ -5,10 +5,10 @@
 # INPUTS
 inputdir = $1		# full path to the fastq file
 infastq = $2		# the name of the gz compressed fastq file without the ".gz" ending (e.i. rm31.fastq)
-WL = $3				# the name of the file containing a list of the experiment barcodes (one barcode per line, no header)
+WL = $3		# the name of the file containing a list of the experiment barcodes (one barcode per line, no header)
 refgenome = $4		# full path to reference genome fastq file or fasta file if it has been indexed already
-pydir = $5			# full path to the mismatchmaker.py file
-q = $6				# mapping quality threshold for filtering
+pydir = $5		# full path to the mismatchmaker.py file
+q = $6			# mapping quality threshold for filtering
 
 # DEPENDENCIES
 # umi_tools
