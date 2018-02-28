@@ -32,15 +32,25 @@ umi_tools extract -p NNNNNNNNCCCCCCCC -I $inputdir"/"$infastq --filter-cell-barc
 # mapping the barcode filtered fastq files
 # bwa index $refseqfq      # only for the first time
 # bwa mem $refseqfa $outfq > $outsam
-bwa mem $refgenome $name"_ft.fastq" > $name"_ft_mp.sam"
+bwa mem $refgenome $name"_ft.fastq" > $name".sam"
 
 # quality filtering, converting, sorting and indexing sam to bam for later use
-samtools view -Sb -q $q $name"_ft_mp.sam" > $name"_ft_mp.bam"
-samtools sort $name"_ft_mp.bam" -o $name"_ft_mp_srt.bam"
-samtools index $name"_ft_mp_srt.bam"
+samtools view -Sb -q $q $name".sam" > $name".bam"
+samtools sort $name".bam" -o $name"_srt.bam"
+samtools index $name"_srt.bam"
 
 # grouping the UMIs with umi_tools
-umi_tools group -I $name"_ft_mp_srt.bam" --group-out=groups.tsv --per-cell --output-bam -S $name"_ft_mp_srt_gp.bam"
+umi_tools group -I $name"_srt.bam" --group-out=groups.tsv --per-cell --output-bam -S $name"_srt_gp.bam"
+
+# retrieving the strand information from the groupped BAM file
+samtools view -Xf 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_rev.tsv"
+samtools view -XF 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_fwd.tsv"
+
+# intersecting with the groups.tsv file (groupping output)
+# this step could be done with join, but I had issues, so I used brute force instead
+# looping in bash is SLOW, if you can do it any better, please feel free! (and let me know)
+cat $name"_rev.tsv" | while read LINE; do grep $LINE < groups.tsv ; done >> $name"_rev_gp.tsv"
+cat $name"_fwd.tsv" | while read LINE; do grep $LINE < groups.tsv ; done >> $name"_fwd_gp.tsv"
 
 # converting final bam to sam
-samtools view -h -o $name"_ft_mp_srt_gp.sam" $name"_ft_mp_srt_gp.bam"
+# samtools view -h -o $name"_ft_mp_srt_gp.sam" $name"_ft_mp_srt_gp.bam"
