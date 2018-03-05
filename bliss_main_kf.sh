@@ -15,7 +15,7 @@ q = $6			# mapping quality threshold for filtering
 # samtools
 # bwa mem
 # python3
-# matchmaker.py
+# mismatchmaker.py
 
 # CODE
 # unzipping the fastq file of interest
