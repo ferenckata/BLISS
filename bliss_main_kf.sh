@@ -34,7 +34,7 @@ tail -n+35 $name"_ft.fastq" > $name"_nhft.fastq"
 # mapping the barcode filtered fastq files
 # bwa index $refseqfq      # only for the first time
 # bwa mem $refseqfa $outfq > $outsam
-bwa mem $refgenome $name"_ft.fastq" > $name".sam"
+bwa mem $refgenome $name"_nhft.fastq" > $name".sam"
 
 # quality filtering, converting, sorting and indexing sam to bam for later use
 samtools view -Sb -q $q $name".sam" > $name".bam"
