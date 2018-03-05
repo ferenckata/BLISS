@@ -42,7 +42,7 @@ samtools sort $name".bam" -o $name"_srt.bam"
 samtools index $name"_srt.bam"
 
 # grouping the UMIs with umi_tools
-umi_tools group -I $name"_srt.bam" --group-out=groups.tsv --per-cell --output-bam -S $name"_srt_gp.bam"
+umi_tools group -I $name"_srt.bam" --group-out=$name"_groups.tsv" --per-cell --output-bam -S $name"_srt_gp.bam"
 
 # retrieving the strand information from the groupped BAM file
 samtools view -Xf 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_rev.tsv"
