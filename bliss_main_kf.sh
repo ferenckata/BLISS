@@ -28,6 +28,8 @@ cat $WL | while read LINE; do python3 $pydir"/"mismatchmaker.py $LINE >> mmWL ;d
 
 # experiment barcode filtering with umi_tools
 umi_tools extract -p NNNNNNNNCCCCCCCC -I $inputdir"/"$infastq --filter-cell-barcode --whitelist=mmWL > $name"_ft.fastq"
+# remove the comment lines from the beginning of the file to map (otherwise samtools crashes)
+tail -n+35 $name"_ft.fastq" > $name"_nhft.fastq"
 
 # mapping the barcode filtered fastq files
 # bwa index $refseqfq      # only for the first time
