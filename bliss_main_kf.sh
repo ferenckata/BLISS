@@ -2,13 +2,13 @@
 # this script can be called as
 # bliss_main_kf.sh infastq inputdir whitelist refgenome pydir quality
 
-# INPUTS
+# INPUTS (it will be in a config file soon...)
 inputdir = $1		# full path to the fastq file
 infastq = $2		# the name of the gz compressed fastq file without the ".gz" ending (e.i. rm31.fastq)
 WL = $3		        # the name of the file containing a list of the experiment barcodes (one barcode per line, no header)
 refgenome = $4		# full path to reference genome fastq file or fasta file if it has been indexed already
 pydir = $5		# full path to the mismatchmaker.py file
-q = $6			# mapping quality threshold for filtering
+# q = $6			# mapping quality threshold for filtering
 
 # DEPENDENCIES
 # umi_tools
@@ -36,8 +36,8 @@ tail -n+35 $name"_ft.fastq" > $name"_nhft.fastq"
 # bwa mem $refseqfa $outfq > $outsam
 bwa mem $refgenome $name"_nhft.fastq" > $name".sam"
 
-# quality filtering, converting, sorting and indexing sam to bam for later use
-samtools view -Sb -q $q $name".sam" > $name".bam"
+# converting, sorting and indexing sam to bam for later use (quality filtering could be done here, but not anymore)
+samtools view -Sb $name".sam" > $name".bam"
 samtools sort $name".bam" -o $name"_srt.bam"
 samtools index $name"_srt.bam"
 
