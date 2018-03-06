@@ -42,7 +42,7 @@ samtools sort $name".bam" -o $name"_srt.bam"
 samtools index $name"_srt.bam"
 
 # deduplicating the UMIs by cells with umi_tools
-umi_tools dedup -I BB101_srt.bam --edit-distance-threshold 2 --per-cell -S BB101_dedup.bam
+umi_tools dedup -I $name"_srt.bam" --edit-distance-threshold 2 --per-cell -S $name"_dedup.bam"
 
 # retrieving the strand information from the groupped BAM file
 samtools view -Xf 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_rev.tsv"
