@@ -1,0 +1,8 @@
+setwd('/Users/GG/Desktop/Kata/Semple_lab/milan_data')
+data = read.delim('bicro54_FR2_TK6_BRCA1_auxin_2_TGATGCGC_chr-loc-countDifferentUMI.bed',header = FALSE)
+tst = diff(data$V2)
+median(tst[abs(tst)<1000])
+mean(tst)
+min(abs(tst))
+a = hist(tst[abs(tst)<1000],breaks=seq(0,1000,by=10))
+length(which(tst==263))

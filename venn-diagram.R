@@ -1,0 +1,17 @@
+#venn diagram maker
+install.packages('VennDiagram')
+library(VennDiagram)
+draw.pairwise.venn(200,400,100,col=c('white','white'),fill=c("#7FFF00","#FF4D40"),ext.text = T)
+
+source("https://bioconductor.org/biocLite.R")
+biocLite(c("RBGL","graph"))
+install.packages("devtools")
+library(devtools)
+install_github("js229/Vennerable")
+library(Vennerable)
+vignette("Venn")
+Vtest<-Venn(SetNames = c("1","2"),Weight = c(`01`=200,`11`=100,`10`=400))
+colortest<-compute.Venn(Vtest,doWeights = T,doEuler = T)
+plot(Vtest,doWeights=T,type="circles")
+gpList=VennThemes(colortest,increasingLineWidth=F)
+plot(Vtest,doWeights=T,type="circles",gpList=gpList)
