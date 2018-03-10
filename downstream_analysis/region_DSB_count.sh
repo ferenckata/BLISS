@@ -12,8 +12,6 @@ cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="tra
 {if($7=="-"){print $1 "\t" $5-2500 "\t" $5+2500 "\t" $18 "\t0\t" $7}else{print $1 "\t" $4-2500 "\t" $4+2500 "\t" $18 "\t0\t" $7}}}'\
 > tss_gencode19.bed
 
-
-
 # Sorting is always useful before using bedtools (even if you suspect that your file is already sorted).
 sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
 sort -k1,1 -k2,2n gene_gencode19.bed > gene_srt_gencode19.bed
@@ -23,6 +21,8 @@ sort -k1,1 -k2,2n tss_gencode19.bed > tss_srt_gencode19.bed
 bedtools merge -i exon_srt_gencode19.bed -s -c 6 -o distinct > exon_srt_m_gencode19.bed
 bedtools merge -i gene_srt_gencode19.bed -s -c 6 -o distinct > gene_srt_m_gencode19.bed
 bedtools merge -i tss_srt_gencode19.bed -s -c 6 -o distinct > tss_srt_m_gencode19.bed
+# and keeping the gene symbol as well #
+bedtools merge -i tss_srt_gencode19.bed -s -c 4,6 -o distinct > tss_srt_genename_gencode19.bed
 
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
 # DSB number in intergenic region is calculated as [(total # DSB) - (DSB# in gene)].
