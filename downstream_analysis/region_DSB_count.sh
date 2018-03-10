@@ -6,6 +6,7 @@
 gunzip gencode.v19.annotation.gtf.gz
 
 # Exon, gene and TSS coordinates are extracted and merged respectively using bedtools 2.27 merge.
+##### TODO keeping gene symbol!! #####
 cat gencode.v19.annotation.gtf | awk '{if($3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $28 "\t0\t" $7}}' > exon_gencode19.bed
 cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $10 "\t0\t" $7}}' > gene_gencode19.bed
 cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="transcript")\
