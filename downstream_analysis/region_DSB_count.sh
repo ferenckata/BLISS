@@ -17,11 +17,11 @@ sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
 sort -k1,1 -k2,2n gene_gencode19.bed > gene_srt_gencode19.bed
 sort -k1,1 -k2,2n tss_gencode19.bed > tss_srt_gencode19.bed
 
-# Merge with respect of strandedness and keeping the strand info.
+# Merge with respect of strandedness and keeping the gene info.
+#### TODO: change to gene symbol!! ####
 bedtools merge -i exon_srt_gencode19.bed -s -c 6 -o distinct > exon_srt_m_gencode19.bed
 bedtools merge -i gene_srt_gencode19.bed -s -c 6 -o distinct > gene_srt_m_gencode19.bed
-bedtools merge -i tss_srt_gencode19.bed -s -c 6 -o distinct > tss_srt_m_gencode19.bed
-# and keeping the gene symbol as well #
+
 bedtools merge -i tss_srt_gencode19.bed -s -c 4 -o distinct > tss_srt_g_gencode19.bed
 
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
@@ -42,9 +42,7 @@ bedtools coverage -counts -a gene_srt_m_gencode19.bed -b $file >$name"_gene.bed"
 echo "exon";\
 bedtools coverage -counts -a exon_srt_m_gencode19.bed -b $file >$name"_exon.bed";\
 echo "tss" ;\
-bedtools coverage -counts -a tss_srt_m_gencode19.bed -b $file >$name"_tss.bed" ;\
-echo "gene per tss" ;\
-bedtools coverage -counts -a tss_srt_g_gencode19.bed -b $file >$name"_g_tss.bed" ;\
+bedtools coverage -counts -a tss_srt_g_gencode19.bed -b $file >$name"_tss.bed" ;\
 done
 
 # From this point R is used, because it’s good for managing data frames and plotting.
