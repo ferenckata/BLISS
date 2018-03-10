@@ -27,13 +27,23 @@ bedtools merge -i tss_srt_gencode19.bed -s -c 4,6 -o distinct > tss_srt_genename
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
 # DSB number in intergenic region is calculated as [(total # DSB) - (DSB# in gene)].
 
-# Bedtools intersect is used, -wa and -wb options to have both strand and DSB count reported.
-cd $path
-for file in *.bed; do id=$(echo $file | cut -d"_" -f1); echo $id;\
-bedtools intersect -wa -wb -a $egpath"/exon_srt_m_gencode19.bed" -b $file > $id"_exon.bed"\
-bedtools intersect -wa -wb -a $egpath"/gene_srt_m_gencode19.bed" -b $file > $id"_gene.bed"\
-bedtools intersect -wa -wb -a $egpath"/tss_srt_m_gencode19.bed" -b $file > $id"_tss.bed"\
-;done
+# Bedtools intersect could be used, -wa and -wb options to have both strand and DSB count reported.
+# But bedtools coverage is better for further analysis
+# coverage cannot take the DSB counts into account, so the files should be "expanded"
+# meaning that the number of lines should correspond to the number of DSBs in the region
+for file in *UMI.bed;\
+do name=$(echo $file | cut -d"_" -f1);\
+echo $name;\
+cat $file | awk '{for(i=1;i<=$4;i++) print $0}' >$name"_exp.bed";\
+done
+# now coverage can be used
+for file in *exp.bed;do name=$(echo $file | cut -d"_" -f1);echo $name;\
+bedtools coverage -counts -a gene_srt_m_gencode19.bed -b $file >$name"_gene.bed";\
+echo "exon";\
+bedtools coverage -counts -a exon_srt_m_gencode19.bed -b $file >$name"_exon.bed";\
+echo "tss" ;\
+bedtools coverage -counts -a tss_srt_m_gencode19.bed -b $file >$name"_tss.bed" ;\
+done
 
 # From this point R is used, because it’s good for managing data frames and plotting.
 DSBcountR.r $path1 $path2
