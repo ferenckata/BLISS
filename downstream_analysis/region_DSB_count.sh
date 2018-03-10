@@ -8,7 +8,11 @@ gunzip gencode.v19.annotation.gtf.gz
 # Exon, gene and TSS coordinates are extracted and merged respectively using bedtools 2.27 merge.
 cat gencode.v19.annotation.gtf | awk '{if($3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $28 "\t0\t" $7}}' > exon_gencode19.bed
 cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $10 "\t0\t" $7}}' > gene_gencode19.bed
-cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="transcript"){if($7=="-"){print $1 "\t" $5-2500 "\t" $5+2500 "\t-\t0\t" $7}else{print $1 "\t" $4-2500 "\t" $4+2500 "\t-\t0\t" $7}}}' > tss_gencode19.bed
+cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="transcript")\
+{if($7=="-"){print $1 "\t" $5-2500 "\t" $5+2500 "\t" $18 "\t0\t" $7}else{print $1 "\t" $4-2500 "\t" $4+2500 "\t" $18 "\t0\t" $7}}}'\
+> tss_gencode19.bed
+
+
 
 # Sorting is always useful before using bedtools (even if you suspect that your file is already sorted).
 sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
