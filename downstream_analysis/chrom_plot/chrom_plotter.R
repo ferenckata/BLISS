@@ -11,10 +11,12 @@ chrom_size <- read.delim(chromsize,header = F)
 for(infile in list.files(inpath)){
   chrname = unlist(strsplit(infile,'_',fixed=T))[1]
   print(chrname)
+  # store coverage file (per chromosome)
   print("loading coverage file...")
   dataByChr <- read.delim(paste(inpath,infile,sep=""),header = F,sep = "\t",as.is = T)
   spacing=4
   chrlen = chrom_size[which(as.character(chrom_size$V1)==chrname),2]
+  # plot and save to png
   outfile = paste(inpath,chrname,"_DSB_distr.png",sep="")
   print("Plotting...")
   png(outfile,width=10,height=6)
