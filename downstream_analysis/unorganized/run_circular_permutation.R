@@ -1,5 +1,5 @@
 
-.libPaths("/exports/igmm/eddie/NextGenResources/software/R/x86_64-pc-linux-gnu-library/3.2")
+.libPaths('')
 
 library("regioneR") 
 
