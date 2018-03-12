@@ -19,7 +19,7 @@ for(infile in list.files(inpath)){
   # plot and save to png
   outfile = paste(inpath,chrname,"_DSB_distr.png",sep="")
   print("Plotting...")
-  png(outfile,width=10,height=6)
+  png(outfile)
   par(mar = c(spacing, 8, 2, 2))
   plot(dataByChr$V2,dataByChr$V4,pch=16,xaxt = "n",
       las = 1,ylab = "DSB counts",xlim = c(1,chrlen),
