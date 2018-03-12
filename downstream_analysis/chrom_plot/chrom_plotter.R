@@ -26,5 +26,5 @@ for(infile in list.files(inpath)){
       cex = 0.25,ylim=c(0,max(dataByChr$V4)),
       xlab="",main=chrname)
   dev.off()
-  sprintf("Plotting of % is done", chrname)
+  sprintf("Plotting of %s is done", chrname)
 }
