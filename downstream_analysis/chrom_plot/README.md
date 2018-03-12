@@ -2,7 +2,7 @@
 
 1. Creating sliding windows using bedtools to reduce the size of the data
 
-`bedtools makewindow -g chr_length.tsv -w 1000 -s 500 > chr_sw.bed`
+`bedtools makewindows -g chr_length.tsv -w 1000 -s 500 > chr_sw.bed`
 
 This case the window size is 1kb and the overlap is 500bp
 
