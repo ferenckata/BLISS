@@ -4,6 +4,7 @@
 # library(argparser)
 
 inpath = ''
+outpath = '' # should be different from inpath
 chromsize = ''
 # store chromosome sizes
 print("loading chromosome file...")
@@ -17,7 +18,7 @@ for(infile in list.files(inpath)){
   spacing=4
   chrlen = chrom_size[which(as.character(chrom_size$V1)==chrname),2]
   # plot and save to png
-  outfile = paste(inpath,chrname,"_DSB_distr.png",sep="")
+  outfile = paste(oupath,chrname,"_DSB_distr.png",sep="")
   print("Plotting...")
   png(outfile)
   par(mar = c(spacing, 8, 2, 2))
