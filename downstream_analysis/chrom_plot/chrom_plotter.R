@@ -9,7 +9,7 @@ chromsize = ''
 print("loading chromosome file...")
 chrom_size <- read.delim(chromsize,header = F)
 for(infile in list.files(inpath)){
-  chrname = unlist(strsplit(infile,'_',fixed=T))[1]
+  chrname = unlist(strsplit(infile,'_',fixed=T))[2]
   print(chrname)
   # store coverage file (per chromosome)
   print("loading coverage file...")
