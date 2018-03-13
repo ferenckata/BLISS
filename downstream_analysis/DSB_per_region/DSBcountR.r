@@ -13,16 +13,12 @@ dsbcount = function(infile,i,outfile,dsbcounts){
   runid = unlist(strsplit(infile,"_",fixed = T))[1]
   genefile = paste(gepath,'/',runid,"_gene.bed",sep="")
   exonfile = paste(gepath,'/',runid,"_exon.bed",sep="")
-  # for total number of DSB per TSS this file
   tssfile = paste(gepath,'/',runid,"_tss.bed",sep="")
-  # for topten TSS of genes with DSB
-  gtssfile = paste(gepath,'/',runid,"_g_tss.bed",sep="")
   
   totalcounts = read.delim(paste(userpath,infile,sep="/"),header = F,sep="\t",as.is = T)
   genecounts = read.delim(genefile,header = F,sep="\t",as.is = T)
   exoncounts = read.delim(exonfile,header = F,sep="\t",as.is = T)
   tsscounts = read.delim(tssfile,header = F,sep="\t",as.is = T)
-  gtsscounts = read.delim(gtssfile,header = F,sep="\t",as.is = T)
   
   # calculating the number of breaks in each region
   totaldsb = sum(totalcounts$V4)
@@ -46,8 +42,8 @@ dsbcount = function(infile,i,outfile,dsbcounts){
   cat(text=wline,file=outfile,sep='\n',append=T)
   
   # calculating the TSS and GeneBody regions with the highest number of DSBs
-  toptent = floor(dim(gtsscounts)[1]/10)
-  srttssc = gtsscounts[order(-gtsscounts$V5),]
+  toptent = floor(dim(tsscounts)[1]/10)
+  srttssc = tsscounts[order(-tsscounts$V5),]
   toptentss = srttssc[1:toptent,]
   tttss[i,"ID"] = runid
   tttss[i,"max"] = toptentss$V5[1]
@@ -80,6 +76,7 @@ for(f in files){
   dsbcounts = dsbcount(f,i,outfile,dsbcounts)
 }
 
+# plot the DSB counts in different genomic regions across datasets
 dsbframe = data.frame(dsbcounts)
 meltedsb = melt(dsbframe,id.vars = 'ID')
 meltedsb$value <-as.numeric(meltedsb$value)
