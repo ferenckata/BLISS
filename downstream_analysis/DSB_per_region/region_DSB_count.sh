@@ -24,6 +24,16 @@ bedtools merge -i exon_srt_gencode19.bed -s -c 4 -o distinct > exon_srt_m_gencod
 bedtools merge -i gene_srt_gencode19.bed -s -c 4 -o distinct > gene_srt_m_gencode19.bed
 bedtools merge -i tss_srt_gencode19.bed -s -c 4 -o distinct > tss_srt_m_gencode19.bed
 
+# Additionally the total length of genes, exons and TSS is caculated and stored for further analysis
+echo "nunmber of bp per gene" >> sumbp.tsv 
+cat gene_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.tsv
+echo "nunmber of bp per exon" >> sumbp.tsv 
+cat exon_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.tsv
+echo "nunmber of bp per TSS" >> sumbp.tsv 
+cat tss_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.tsv
+cat sumbp.tsv | paste - - > total_length.tsv
+rm sumbp.tsv
+
 # Bedtools intersect could be used, -wa and -wb options to have both strand and DSB count reported.
 # But bedtools coverage is better for further analysis
 # coverage cannot take the DSB counts into account, so the files should be "expanded"
