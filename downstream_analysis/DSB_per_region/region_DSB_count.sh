@@ -25,6 +25,10 @@ bedtools merge -i gene_srt_gencode19.bed -s -c 4 -o distinct > gene_srt_m_gencod
 bedtools merge -i tss_srt_gencode19.bed -s -c 4 -o distinct > tss_srt_m_gencode19.bed
 
 # Additionally the total length of genes, exons and TSS is caculated and stored for further analysis
+echo "total" >> sumbp.tsv
+# this number is the total number of non-N basepairs in the hg19
+# downloaded from here:http://genomewiki.ucsc.edu/index.php/Hg19_Genome_size_statistics
+echo "2897310462" >> sumbp.tsv
 echo "gene" >> sumbp.tsv 
 cat gene_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.tsv
 echo "exon" >> sumbp.tsv 
