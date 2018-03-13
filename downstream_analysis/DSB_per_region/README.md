@@ -10,6 +10,7 @@ After retrieving the start and end coordinates of different regions, bedtools ca
 The `DSBcountR.r` script
 - calculates the total number of DSBs in the whole genome, in genes, in intergenic regions, in exons, in introns and in the pre-defined TSS region
 - plots the number of DSBs in these regions across datasets
-- finds the top10% of the genes and TSS regions with the most number of breaks
-- calculates the max, median and min number of DSBs in the top10% fragile TSS and genes
-- compare the top10% of fragile genes and TSS between datasets
+- finds the top1% of the genes and TSS regions with the most number of breaks
+- calculates the max, median and min number of DSBs in the top1% fragile TSS and genes
+
+Bedtools is used to compare the top1% of fragile genes and TSS between datasets
