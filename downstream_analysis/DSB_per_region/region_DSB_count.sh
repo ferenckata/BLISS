@@ -26,7 +26,7 @@ sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
 sort -k1,1 -k2,2n gene_gencode19.bed > gene_srt_gencode19.bed
 sort -k1,1 -k2,2n tss_gencode19.bed > tss_srt_gencode19.bed
 
-# Merge without respect of strandedness and keeping the gene symbol.
+# Merge without respect of strandedness and keeping the gene symbol for the total DSB counts per region
 bedtools merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
 bedtools merge -i gene_srt_gencode19.bed -c 4 -o distinct > gene_srt_m_gencode19.bed
 bedtools merge -i tss_srt_gencode19.bed -c 4 -o distinct > tss_srt_m_gencode19.bed
@@ -48,7 +48,8 @@ rm sumbp.tsv
 # step in the folder where you have your UMI-filtered bed files
 cd $myfolder
 
-# Bedtools intersect could be used, -wa and -wb options to have both strand and DSB count reported.
+# Bedtools intersect could be used for the counts of topX% of genes and TSS
+# with -wa and -wb options to have both gene name and DSB count reported
 # But bedtools coverage is better for further analysis
 # coverage cannot take the DSB counts into account, so the files should be "expanded"
 # meaning that the number of lines should correspond to the number of DSBs in the region
@@ -69,6 +70,16 @@ echo "exon";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"exon_srt_m_gencode19.bed" -b $file >$name"_exon.bed";\
 echo "tss";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_m_gencode19.bed" -b $file >$name"_tss.bed";\
+done
+
+# Do the same, but on non-merged gene and tss regions for later analysis on the top1% fragile genes/TSS
+
+for file in *exp.bed;\
+do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-3);\
+echo $name;\
+$bedpath"bedtools" coverage -counts -a $gencodepath"gene_srt_gencode19.bed" -b $file >$name"_c_gene.bed";\
+echo "tss";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_gencode19.bed" -b $file >$name"_c_tss.bed";\
 done
 
 # From this point R is used, because it’s good for managing data frames and plotting.
