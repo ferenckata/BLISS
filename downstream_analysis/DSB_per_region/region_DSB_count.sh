@@ -19,10 +19,10 @@ sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
 sort -k1,1 -k2,2n gene_gencode19.bed > gene_srt_gencode19.bed
 sort -k1,1 -k2,2n tss_gencode19.bed > tss_srt_gencode19.bed
 
-# Merge with respect of strandedness and keeping the gene symbol.
-bedtools merge -i exon_srt_gencode19.bed -s -c 4 -o distinct > exon_srt_m_gencode19.bed
-bedtools merge -i gene_srt_gencode19.bed -s -c 4 -o distinct > gene_srt_m_gencode19.bed
-bedtools merge -i tss_srt_gencode19.bed -s -c 4 -o distinct > tss_srt_m_gencode19.bed
+# Merge without respect of strandedness and keeping the gene symbol.
+bedtools merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
+bedtools merge -i gene_srt_gencode19.bed -c 4 -o distinct > gene_srt_m_gencode19.bed
+bedtools merge -i tss_srt_gencode19.bed -c 4 -o distinct > tss_srt_m_gencode19.bed
 
 # Additionally the total length of genes, exons and TSS is caculated and stored for further analysis
 echo "total" >> sumbp.tsv
