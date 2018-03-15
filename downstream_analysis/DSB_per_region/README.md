@@ -11,6 +11,5 @@ The `DSBcountR.r` script
 - calculates the total number of DSBs in the whole genome, in genes, in intergenic regions, in exons, in introns and in the pre-defined TSS region
 - plots the number of DSBs in these regions across datasets
 - finds the top1% of the genes and TSS regions with the most number of breaks
-- calculates the max, median and min number of DSBs in the top1% fragile TSS and genes
-
-Bedtools is used to compare the top1% of fragile genes and TSS between datasets
+- plots the overlap between top1% fragile genes/TSSs across datasets
+- plots DSB counts versus gene length
