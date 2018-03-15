@@ -86,4 +86,6 @@ done
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
 # DSB number in intergenic region is calculated as [(total # DSB) - (DSB# in gene)].
 # rpath is where your r code is, that you can find in this folder
-$rpath DSBcountR.r $path1 $path2
+cd $rpath
+Rscript DSBcountR.r $path1 $path2
+
