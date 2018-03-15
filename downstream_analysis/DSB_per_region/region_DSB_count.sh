@@ -2,6 +2,13 @@
 # https://www.gencodegenes.org/releases/19.html
 # (note: make very sure you're using the same assembly that has been used for mapping!)
 
+# create and step in the folder where you intend to keep the gene, exon and TSS regions
+cd ~/Documents # or wherever you wish to keep your files
+mkdir gene_db
+genecodepath=~/Documents/gene_db # this can be different for you!!
+cd $genecodepath
+# Move here the downloaded file
+mv ~/Downloads/gencode.v19.annotation.gtf.gz .
 # Unzip the downloaded file
 gunzip gencode.v19.annotation.gtf.gz
 
@@ -38,6 +45,9 @@ cat tss_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.t
 cat sumbp.tsv | paste - - > total_length.tsv
 rm sumbp.tsv
 
+# step in the folder where you have your UMI-filtered bed files
+cd $myfolder
+
 # Bedtools intersect could be used, -wa and -wb options to have both strand and DSB count reported.
 # But bedtools coverage is better for further analysis
 # coverage cannot take the DSB counts into account, so the files should be "expanded"
@@ -64,4 +74,5 @@ done
 # From this point R is used, because it’s good for managing data frames and plotting.
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
 # DSB number in intergenic region is calculated as [(total # DSB) - (DSB# in gene)].
-DSBcountR.r $path1 $path2
+# rpath is where your r code is, that you can find in this folder
+$rpath DSBcountR.r $path1 $path2
