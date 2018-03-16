@@ -67,9 +67,10 @@ chr10	4500	5500	0
 ```
 
 4. Removing regions with zero counts
-this command filters out all lines with 0 counts:
+this command filters out all lines with 0 counts and adds the ID at the end of the line
+(that will be useful when plotting different datasets):
 
-`cat $ID"_coverage.bed" | awk '{if($4>0){print $0}}' > $ID"_nz_cov.bed" `
+`for file in *.bed;do name=$(echo $file | cut -d"_" -f2);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > $ID"_nz_cov.bed" ;done`
 
 And the result is:
 
