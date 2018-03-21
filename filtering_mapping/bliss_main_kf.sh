@@ -8,7 +8,7 @@ infastq = $2		# the name of the gz compressed fastq file without the ".gz" endin
 WL = $3		        # the name of the file containing a list of the experiment barcodes (one barcode per line, no header)
 refgenome = $4		# full path to reference genome fastq file or fasta file if it has been indexed already
 pydir = $5		# full path to the mismatchmaker.py file
-# q = $6			# mapping quality threshold for filtering
+q = $6			# mapping quality threshold for filtering
 
 # DEPENDENCIES
 # umi_tools
@@ -37,8 +37,8 @@ tail -n+35 $name"_ft.fastq" > $name"_nhft.fastq"
 # bwa mem $refseqfa $outfq > $outsam
 bwa mem $refgenome $name"_nhft.fastq" > $name".sam"
 
-# converting, sorting and indexing sam to bam for later use (quality filtering could be done here, but not anymore)
-samtools view -Sb $name".sam" > $name".bam"
+# converting, quality filtering, sorting and indexing sam to bam for later use
+samtools view -Sb -q $q $name".sam" > $name".bam"
 samtools sort $name".bam" -o $name"_srt.bam"
 samtools index $name"_srt.bam"
 
@@ -48,9 +48,6 @@ umi_tools dedup -I $name"_srt.bam" --edit-distance-threshold 2 --per-cell -S $na
 # retrieving the strand information from the groupped BAM file
 samtools view -Xf 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_rev.tsv"
 samtools view -XF 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_fwd.tsv"
-
-# intersecting with the groups.tsv file (groupping output)
-# not sure if needed
 
 # converting final bam to sam
 # samtools view -h -o $name"_ft_mp_srt_gp.sam" $name"_ft_mp_srt_gp.bam"
