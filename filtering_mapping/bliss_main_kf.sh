@@ -24,6 +24,7 @@ gunzip $inputdir"/"$infastq".gz"
 name = $(echo $infastq | cut -d'.' -f1)
 
 # creating all possible mismatches of the experiment barcode
+# each mismatched barcode can be saved to different files, and the barcode filtering could be run on each file
 cat $WL | while read LINE; do python3 $pydir"/"mismatchmaker.py $LINE >> mmWL ;done
 
 # experiment barcode filtering with umi_tools
@@ -49,10 +50,7 @@ samtools view -Xf 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_rev.tsv"
 samtools view -XF 0x10 $name"_srt_gp.bam" | awk '{print $1}' > $name"_fwd.tsv"
 
 # intersecting with the groups.tsv file (groupping output)
-# this step could be done with join, but I had issues, so I used brute force instead
-# looping in bash is SLOW, if you can do it any better, please feel free! (and let me know)
-# cat $name"_rev.tsv" | while read LINE; do grep $LINE < groups.tsv ; done >> $name"_rev_gp.tsv"
-# cat $name"_fwd.tsv" | while read LINE; do grep $LINE < groups.tsv ; done >> $name"_fwd_gp.tsv"
+# not sure if needed
 
 # converting final bam to sam
 # samtools view -h -o $name"_ft_mp_srt_gp.sam" $name"_ft_mp_srt_gp.bam"
