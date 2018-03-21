@@ -1,10 +1,10 @@
 ## BLISS mapping and UMI and barcode filtering
 
 _Dependences_
-- (UMI tools)[https://github.com/CGATOxford/UMI-tools]
-- `(mismathcmaker.py)[https://github.com/ferenckata/BLISS/blob/master/filtering_mapping/mismatchmaker.py]`
-- (BWA MEM)[http://bio-bwa.sourceforge.net/bwa.shtml]
-- (samtools)[http://www.htslib.org/doc/samtools.html]
+- [UMI tools](https://github.com/CGATOxford/UMI-tools)
+- [mismathcmaker.py](https://github.com/ferenckata/BLISS/blob/master/filtering_mapping/mismatchmaker.py)
+- [BWA MEM](http://bio-bwa.sourceforge.net/bwa.shtml)
+- [samtools](http://www.htslib.org/doc/samtools.html)
 
 _How to run the scripts_
 It is better to run `bliss_main_kf.sh` line by line, at least for the first few times.
