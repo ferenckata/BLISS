@@ -1,6 +1,6 @@
 ## BLISS mapping and UMI and barcode filtering
 
-_Dependences_
+_Dependencies_
 
 - [UMI tools](https://github.com/CGATOxford/UMI-tools)
 - [mismathcmaker.py](https://github.com/ferenckata/BLISS/blob/master/filtering_mapping/mismatchmaker.py)
