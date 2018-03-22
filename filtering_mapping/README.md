@@ -16,10 +16,12 @@ The file structure is not fixed, you should optimize it for yourself.
 _What does it do?_
 
 `bliss_main_kf.sh` is the main script.
-After unzipping the fastq file, it prepares the whitelist of barcodes for `UMItools extract`, which will do two things:
+After unzipping the fastq file, `mismatchmaker.py` prepares the whitelist of barcodes for `UMItools extract`. A whitelist consists of all versions of barcode(s) with max 1 mismatch. Than `UMItools extract` does two things:
  - filter for the experiment barcode
  - relocate the experiment barcode and UMI from the sequence to the header
  
- Next step is the mapping that is done by the BWA MEM algorithm.
- The output is converted to the binary version with samtools for further analysis.
+ Next step is the mapping that is done by the `BWA MEM` algorithm.
+ The output is converted to the binary version with `samtools` for further analysis.
  `UMItools dedup` will group the UMIs and filter out pcr duplicates. The current version groups the UMIs with respet to the experiment barcode. If the whitelist has all the barcodes, it is needed. If you prefer to keep the experiments separated and run everything X-times, the `--per-cell` option can be removed.
+ 
+ Missing: how to separate the barcodes later?
