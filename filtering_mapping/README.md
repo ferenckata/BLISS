@@ -30,5 +30,6 @@ After unzipping the fastq file, `mismatchmaker.py` prepares the whitelist of bar
  
  HMMcopy corrects for GC and mappability biases. The hg19 mappability and GC wig file can be downloaded from here:
  https://github.com/shahcompbio/hmmcopy_utils
+ 
  Than follow the steps described here:
  http://bioconductor.org/packages/release/bioc/vignettes/HMMcopy/inst/doc/HMMcopy.pdf
