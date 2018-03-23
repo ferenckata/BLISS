@@ -1,19 +1,30 @@
 # count and plot DSBs in exons, introns and intergenic regions
 
+# ----------- DEPENDENCIES -------------
+# install.packages('VennDiagram')
 library(ggplot2)
 library(reshape2)
 library(wesanderson)
 library(plyr)
 library(RColorBrewer)
-# install.packages('VennDiagram')
 library(VennDiagram)
 
-userpath = "~/Documents/bliss/MCF7/MCF7_BICRO63/rtest/originals/"
-gepath = "~/Documents/bliss/MCF7/MCF7_BICRO63/rtest/exon_gene_counts/"
-normfile = "~/Documents/gene_db/hg19/total_length.tsv"
+# ---------- INPUTS -------------
+userpath = ""
+gepath = ""
+normfile = ""
 
 files = list.files(path=userpath,pattern = "exp.bed")
 
+# ----------- FUNCTIONS --------------
+
+# There are four functions:
+# 1) for counting the DSBs per region 
+# 2) for finding the genes with the most DSBs and plotting the DSB count vs gene length
+# 3) for plotting Venn diagram for 4 datasets
+# 4) for plotting fractions
+
+# 1) 
 dsbcount = function(infile,i,outfile,dsbcounts){
   
   # ------------ overview on counts ----------------  
@@ -79,6 +90,7 @@ dsbcount = function(infile,i,outfile,dsbcounts){
   
 }
 
+# 2)
 fragility = function(infile,i,fragdb,endng){
   
   # -------------- topX% fragile gene/TSS --------------------------
@@ -116,6 +128,7 @@ fragility = function(infile,i,fragdb,endng){
   
 }
 
+# 3)
 venner = function(fragdb,outname){
   # intersect the data
   fragm = as.matrix(fragdb)
@@ -171,6 +184,15 @@ venner = function(fragdb,outname){
   dev.off()
 }
 
+# 4)
+fracplot = function(pdfname,orig){
+  origdf = data.frame(orig)
+  meltedsb = melt(origdf,id.vars = 'ID')
+  meltedsb$value <-as.numeric(meltedsb$value)
+  pdf(paste(userpath,pdfname,sep=""))
+  ggplot(meltedsb,aes(variable,value)) + geom_bar(aes(fill=ID), stat = "identity",position = "dodge") + scale_fill_brewer(palette = "Paired")
+  dev.off()
+}
 
 # ----------------------------------- RUN ----------------------------------- 
 
@@ -193,11 +215,12 @@ for(f in files){
   dsbcounts = dsbcount(f,i,outfile,dsbcounts)
 }
 
-#----- save data ------
+#-------------- save data ---------------
+  
 dsbframe = data.frame(dsbcounts)
 write.csv(dsbframe,file=paste(userpath,'DSB_counts.csv',sep=""))
 
-# ----- plot ------------
+# -------------- plot ---------------------
 
 # original counts 
 orig = cbind(as.character(dsbframe$ID),as.character(dsbframe$total),
@@ -205,12 +228,9 @@ orig = cbind(as.character(dsbframe$ID),as.character(dsbframe$total),
              as.character(dsbframe$exon),as.character(dsbframe$intron),
              as.character(dsbframe$tss))
 colnames(orig) = c("ID","total","intergenic","gene","exon","intron","tss")
-origdf = data.frame(orig)
-meltedsb = melt(origdf,id.vars = 'ID')
-meltedsb$value <-as.numeric(meltedsb$value)
-pdf(paste(userpath,'DSB_count_distribution.pdf',sep=""))
-ggplot(meltedsb,aes(variable,value)) + geom_bar(aes(fill=ID), stat = "identity",position = "dodge") + scale_fill_brewer(palette = "Paired")
-dev.off()
+  
+pdfname = 'DSB_count_distribution.pdf'
+fracplot(pdfname,orig)
 
 # normalized counts 
 normed = cbind(as.character(dsbframe$ID),as.character(dsbframe$totalnorm),
@@ -219,12 +239,9 @@ normed = cbind(as.character(dsbframe$ID),as.character(dsbframe$totalnorm),
              as.character(dsbframe$tssnorm))
 colnames(normed) = c("ID","total/bp","intergenic/bp","gene/bp","exon/bp",
                    "intron/bp","tss/bp")
-normeddf = data.frame(normed)
-nmeltedsb = melt(normeddf,id.vars = 'ID')
-nmeltedsb$value <-as.numeric(nmeltedsb$value)
-pdf(paste(userpath,'DSB_norm_distribution.pdf',sep=""))
-ggplot(nmeltedsb,aes(variable,value))+ geom_bar(aes(fill=ID),stat = "identity",position = "dodge") + scale_fill_brewer(palette = "Paired")
-dev.off()
+  
+pdfname = 'DSB_norm_distribution.pdf'
+fracplot(pdfname,normed)
 
 # fractions
 frac = cbind(as.character(dsbframe$ID),as.character(dsbframe$totalfr),
@@ -233,14 +250,12 @@ frac = cbind(as.character(dsbframe$ID),as.character(dsbframe$totalfr),
                as.character(dsbframe$tssfr))
 colnames(frac) = c("ID","total/fraction","intergenic/fraction","gene/fraction",
                      "exon/fraction","intron/fraction","tss/fraction")
-fracdf = data.frame(frac)
-frmeltedsb = melt(fracdf,id.vars = 'ID')
-frmeltedsb$value <-as.numeric(frmeltedsb$value)
-pdf(paste(userpath,'DSB_fraction_distribution.pdf',sep=""))
-ggplot(frmeltedsb,aes(variable,value))+ geom_bar(aes(fill=ID),stat = "identity",position = "dodge") + scale_fill_brewer(palette = "Paired")
-dev.off()
+  
+pdfname = 'DSB_fraction_distribution.pdf'
+fracplot(pdfname,frac)
 
-# ----- FRAGILITY  -------
+
+# ------------ FRAGILITY  ------------------
 
 fragm = matrix(data=NA,nrow=1,ncol=1)
 tfragdb = data.frame(fragm)
