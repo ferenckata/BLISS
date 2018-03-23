@@ -25,3 +25,10 @@ After unzipping the fastq file, `mismatchmaker.py` prepares the whitelist of bar
  `UMItools dedup` will group the UMIs and filter out pcr duplicates. The current version groups the UMIs with respet to the experiment barcode. If the whitelist has all the barcodes, it is needed. If you prefer to keep the experiments separated and run everything X-times, the `--per-cell` option can be removed.
  
  Missing: how to separate the barcodes later?
+ 
+ _Some extra feature_
+ 
+ HMMcopy corrects for GC and mappability biases. The hg19 mappability and GC wig file can be downloaded from here:
+ https://github.com/shahcompbio/hmmcopy_utils
+ Than follow the steps described here:
+ http://bioconductor.org/packages/release/bioc/vignettes/HMMcopy/inst/doc/HMMcopy.pdf
