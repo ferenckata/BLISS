@@ -13,3 +13,6 @@ The `DSBcountR.r` script
 - finds the top1% of the genes and TSS regions with the most number of breaks
 - plots the overlap between top1% fragile genes/TSSs across datasets
 - plots DSB counts versus gene length
+
+
+The `DSB_vs_genelength.r` script plots the DSB count vs the genelength in scatterplot and boxplot (though the latter one has way too many outliers). It also pick the outliers above a threshold taken from the scatterplot. Finds the GO term for these genes and save it in a file. It also finds the most frequent GO terms listed.
