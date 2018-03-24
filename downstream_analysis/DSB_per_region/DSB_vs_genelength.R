@@ -1,4 +1,5 @@
 library(biomaRt)
+library(plyr)
 
 # plot dsb number vs gene length in four color for four different files
 
@@ -116,3 +117,11 @@ goforols = getBM(attributes = c('hgnc_symbol','name_1006'),
                  values = outliers,
                  mart = mymart)
 write.table(goforols,file = "fragile_gene_GO.tsv",quote = F,sep = "\t",row.names = F,col.names = c("gene symbols","GO term"))
+# sort by GO frequency
+gofreq = count(goforols,vars = 'name_1006')
+gofreq = gofreq[order(-gofrec$freq),]
+# save GO counts
+write.table(gofreq,file="fragile_gene_GOfreq.tsv",quote = F,sep='\t',row.names = F,col.names = T)
+
+  
+  
