@@ -71,7 +71,15 @@ Note: You get the following warning if your input bed file doesn't follow the sa
 ***** WARNING: File chr10_w1000_s500.bed has inconsistent naming convention for record
 
 To fix this, you can run this command on your input file (it will replace the expanded file):
-`for file in *exp.bed;do name=$(echo $file | cut -d"_" -f1-2);echo $name;cat $file | awk '{print "chr"$0}' >$name"_mcn.bed";rm $name"_exp.bed"; mv $name"_mcn.bed" $name"_exp.bed";done`
+```
+for file in *exp.bed;\
+do name=$(echo $file | cut -d"_" -f1-2);\
+echo $name;\
+cat $file | awk '{print "chr"$0}' >$name"_mcn.bed";\
+rm $name"_exp.bed";\
+mv $name"_mcn.bed" $name"_exp.bed";\
+done
+```
 
 4. Removing regions with zero counts
 this command filters out all lines with 0 counts and adds the ID at the end of the line
@@ -79,7 +87,11 @@ this command filters out all lines with 0 counts and adds the ID at the end of t
 
 ```
 mkdir -p ../nz
-for file in *.bed;do name=$(echo $file | cut -d"_" -f3);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$ID"_nz_cov.bed" ;done
+for file in *.bed;\
+do name=$(echo $file | cut -d"_" -f3);\
+echo $name;\
+cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$ID"_nz_cov.bed" ;\
+done
 ```
 
 
@@ -103,7 +115,11 @@ Note: the code expects the file naming convention such as chrID_libraryID_experi
 The chrID was placed there in the previous step. If you don't have both library ID and experiment ID, run this code instead:
 ```
 mkdir -p ../nz
-for file in *.bed;do name=$(echo $file | cut -d"_" -f2);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$name"_nz_cov.bed" ;done
+for file in *.bed;\
+do name=$(echo $file | cut -d"_" -f2);\
+echo $name;\
+cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$name"_nz_cov.bed" ;\
+done
 ```
 
 5. Plotting with chrom_plotter.R (part of BLISS package)
