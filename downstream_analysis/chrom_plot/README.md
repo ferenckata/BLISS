@@ -90,7 +90,8 @@ mkdir -p ../nz
 for file in *.bed;\
 do name=$(echo $file | cut -d"_" -f1-3);\
 echo $name;\
-cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$name"_nz_cov.bed" ;\
+ID=$(echo $name | cut -d"_" -f3);\
+cat $file | awk -v ID="$ID" '{if($4>0){print $0 "\t" ID}}' > ../nz/$name"_nz_cov.bed" ;\
 done
 ```
 
@@ -118,7 +119,8 @@ mkdir -p ../nz
 for file in *.bed;\
 do name=$(echo $file | cut -d"_" -f1-2);\
 echo $name;\
-cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$name"_nz_cov.bed" ;\
+ID=$(echo $name | cut -d"_" -f2);\
+cat $file | awk -v ID="$ID" '{if($4>0){print $0 "\t" ID}}' > ../nz/$name"_nz_cov.bed" ;\
 done
 ```
 
