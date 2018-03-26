@@ -66,29 +66,47 @@ chr10	4500	5500	0
 ...
 ```
 
+Note: You get the following warning if your input bed file doesn't follow the same naming convention, ie. if chromosome 1 is labelled as "1" instead of "chr1".
+
+***** WARNING: File chr10_w1000_s500.bed has inconsistent naming convention for record
+
+To fix this, you can run this command on your input file (it will replace the expanded file):
+`for file in *exp.bed;do name=$(echo $file | cut -d"_" -f1-2);echo $name;cat $file | awk '{print "chr"$0}' >$name"_mcn.bed";rm $name"_exp.bed"; mv $name"_mcn.bed" $name"_exp.bed";done`
+
 4. Removing regions with zero counts
 this command filters out all lines with 0 counts and adds the ID at the end of the line
 (that will be useful when plotting different datasets):
 
-`for file in *.bed;do name=$(echo $file | cut -d"_" -f2);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > $ID"_nz_cov.bed" ;done`
+```
+mkdir -p ../nz
+for file in *.bed;do name=$(echo $file | cut -d"_" -f3);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$ID"_nz_cov.bed" ;done
+```
+
 
 And the result is:
 
 ```
-chr10	84500	85500	1
-chr10	85000	86000	1
-chr10	93500	94500	2
-chr10	94000	95000	2
-chr10	94500	95500	2
-chr10	95000	96000	2
-chr10	102000	103000	2
-chr10	102500	103500	2
-chr10	104000	105000	3
-chr10	104500	105500	3
+chr10	84500	85500	1 ID1
+chr10	85000	86000	1 ID1
+chr10	93500	94500	2 ID1
+chr10	94000	95000	2 ID1
+chr10	94500	95500	2 ID1
+chr10	95000	96000	2 ID1
+chr10	102000	103000	2 ID1
+chr10	102500	103500	2 ID1
+chr10	104000	105000	3 ID1
+chr10	104500	105500	3 ID1
 ...
 ```
 
-5. Plotting with chrom_plotter.R
+Note: the code expects the file naming convention such as chrID_libraryID_experimentID_coverage.bed
+The chrID was placed there in the previous step. If you don't have both library ID and experiment ID, run this code instead:
+```
+mkdir -p ../nz
+for file in *.bed;do name=$(echo $file | cut -d"_" -f2);echo $name;cat $file | awk -v name="$name" '{if($4>0){print $0 "\t" name}}' > ../nz/$name"_nz_cov.bed" ;done
+```
+
+5. Plotting with chrom_plotter.R (part of BLISS package)
 This one is a custom-made R script based on [TitanCNA](http://bioconductor.org/packages/release/bioc/vignettes/TitanCNA/inst/doc/TitanCNA.pdf)
 
 The input is the path to the files (one per chromosome) with the reported count per region. The resolution depends on the previous steps.
