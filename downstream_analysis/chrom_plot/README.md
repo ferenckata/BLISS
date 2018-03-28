@@ -2,6 +2,8 @@
 
 _Dependencies:_
   - [bedtools](http://bedtools.readthedocs.io/en/latest/)
+  
+_Pre-analysis workflow_
 
 1. Creating sliding windows using bedtools to reduce the size of the data
 
