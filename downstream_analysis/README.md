@@ -2,6 +2,8 @@
 
 ## BLISS analysis
 
+Each folder contains a README file, with the description of the required steps in the terminal, and the source codes of the corresponding function in the R package.
+
 Currently there are two main paths:
 1. DSB counting per regions
   - fractions in intergenic, genebody, TSS +/-2.5kb, intron and exon regions
