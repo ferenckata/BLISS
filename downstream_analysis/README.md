@@ -14,8 +14,7 @@ Currently there are two main paths:
   Including:
   - plotting DSBs along the genome with karyogram
   
-  _Will include:_
-  _- circos plotting of DSBs_
+  _Will include: circos plotting of DSBs_
   
 3. Enrichment analysis
 
@@ -23,5 +22,4 @@ Currently there are two main paths:
   - DSB visualisation in the gene body region
   - DSB counting in highly expressed genes
   
-  _Will include:_
-  _- DSB visualisation around recurrent rearrangement breakpoints_
+  _Will include: DSB visualisation around recurrent rearrangement breakpoints_
