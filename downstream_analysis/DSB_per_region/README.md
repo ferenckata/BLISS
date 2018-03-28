@@ -23,6 +23,5 @@ The `DSB_vs_genelength.r` script
 
 to be implemented:
 - linear regression
-- remove hard-coded thresholds and inputs
 
 
