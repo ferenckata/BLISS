@@ -24,4 +24,6 @@ The `DSB_vs_genelength.r` script
 to do:
 - linear regression
 
+_Requirements:_
+- The file name should follow this convention: runID_experimentID_someextrainfo_UMI.bed
 
