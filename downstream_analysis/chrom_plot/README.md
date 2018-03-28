@@ -1,5 +1,8 @@
 ## Chromosome-wide plotting of DSBs
 
+_Dependencies:_
+  - [bedtools](http://bedtools.readthedocs.io/en/latest/)
+
 1. Creating sliding windows using bedtools to reduce the size of the data
 
 `bedtools makewindows -g chr_length.tsv -w 1000 -s 500 > chr_sw.bed`
