@@ -21,7 +21,7 @@ The `DSB_vs_genelength.r` script
 - finds the GO term for these genes and sorts the GO terms by frequency
 - writes everything in files
 
-to be implemented:
+to do:
 - linear regression
 
 
