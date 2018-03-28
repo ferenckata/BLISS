@@ -25,5 +25,5 @@ to do:
 - linear regression
 
 _Requirements:_
-- The file name should follow this convention: runID_experimentID_someextrainfo_UMI.bed
+_The file name should follow this convention: runID_experimentID_someextrainfo_UMI.bed_
 
