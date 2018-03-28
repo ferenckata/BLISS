@@ -62,9 +62,12 @@ done
 # gencodepath= ... the path to the previously prepared genecode stuff
 # bedpath= ... in case you have no sudo right and bedtools is in a user folder
 
+mkdir -p ../exon_gene_counts
+
 for file in *exp.bed;\
-do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-3);\
+do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
 echo $name;\
+echo "gene";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"gene_srt_m_gencode19.bed" -b $file >$name"_gene.bed";\
 echo "exon";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"exon_srt_m_gencode19.bed" -b $file >$name"_exon.bed";\
@@ -72,11 +75,22 @@ echo "tss";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_m_gencode19.bed" -b $file >$name"_tss.bed";\
 done
 
+# If you got this error message:
+# Error: Unable to open file gene_srt_m_gencode19.bed. Exiting.
+# That probably means that you have a spelling mistake in $gencodepath. You can test is with echo $gencodepath.
+
+# The following piece cuts the filename in the second "_"
+# name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4)
+# if you have only one ID in the file name, you should use this:
+# name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-3)
+# same goes for the piece below
+
 # Do the same, but on non-merged gene and tss regions for later analysis on the top1% fragile genes/TSS
 
 for file in *exp.bed;\
-do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-3);\
+do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
 echo $name;\
+echo "gene";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"gene_srt_gencode19.bed" -b $file >$name"_c_gene.bed";\
 echo "tss";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_gencode19.bed" -b $file >$name"_c_tss.bed";\
@@ -85,7 +99,5 @@ done
 # From this point R is used, because it’s good for managing data frames and plotting.
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
 # DSB number in intergenic region is calculated as [(total # DSB) - (DSB# in gene)].
-# rpath is where your r code is, that you can find in this folder
-cd $rpath
-Rscript DSBcountR.r $path1 $path2
+# the corresponding codes are described in the README
 
