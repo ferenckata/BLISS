@@ -2,7 +2,7 @@
 
 0. General overview on the counts of DSB/location with `DSB_count_distr.py`
 - input is the directory with the '*chr-loc-countDifferentUMI.bed' files and the ID of the dataset
-- No change is required in the bedgraph file
+- no change is required in the bedgraph file
 - currently up to five datasets, changing would require adding colors
 
 _Dependencies:_
