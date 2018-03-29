@@ -1,3 +1,5 @@
+# ------------------- first part: region information from gencode database ----------------------
+
 # Gencode database can be found here for hg19:
 # https://www.gencodegenes.org/releases/19.html
 # (note: make very sure you're using the same assembly that has been used for mapping!)
@@ -21,10 +23,16 @@ cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="tra
 {if($7=="-"){print $1 "\t" $5-2500 "\t" $5+2500 "\t" $18 "\t0\t" $7}else{print $1 "\t" $4-2500 "\t" $4+2500 "\t" $18 "\t0\t" $7}}}'\
 > tss_gencode19.bed
 
+# Create dataset of the +/-3kb region from the genebody for enrichment analysis
+cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' > upstr_gene_gencode19.bed
+cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' > dwnstr_gene_gencode19.bed
+
 # Sorting is always useful before using bedtools (even if you suspect, but not 100% sure that your file is already sorted).
 sort -k1,1 -k2,2n exon_gencode19.bed > exon_srt_gencode19.bed
 sort -k1,1 -k2,2n gene_gencode19.bed > gene_srt_gencode19.bed
 sort -k1,1 -k2,2n tss_gencode19.bed > tss_srt_gencode19.bed
+sort -k1,1 -k2,2n upstr_gene_gencode19.bed > upstr_gene_srt_gencode19.bed
+sort -k1,1 -k2,2n dwnstr_gene_gencode19.bed > dwnstr_gene_srt_gencode19.bed
 
 # Merge without respect of strandedness and keeping the gene symbol for the total DSB counts per region
 bedtools merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
@@ -44,6 +52,9 @@ echo "TSS" >> sumbp.tsv
 cat tss_srt_m_gencode19.bed | awk '{print $3-$2}' | paste -sd+ - | bc >> sumbp.tsv
 cat sumbp.tsv | paste - - > total_length.tsv
 rm sumbp.tsv
+
+
+# ------------------- second part: region information intersection with DSB data ----------------------
 
 # step in the folder where you have your UMI-filtered bed files
 cd $myfolder
@@ -95,6 +106,8 @@ $bedpath"bedtools" coverage -counts -a $gencodepath"gene_srt_gencode19.bed" -b $
 echo "tss";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_gencode19.bed" -b $file >$name"_c_tss.bed";\
 done
+
+# ------------------- third part: plotting ----------------------
 
 # From this point R is used, because it’s good for managing data frames and plotting.
 # DSBs are counted in these exonic regions. DSB number in intron is calculated as [(DSB# in gene) - (DSB# in exon)].
