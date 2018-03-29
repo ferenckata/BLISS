@@ -14,21 +14,19 @@ mv ~/Downloads/gencode.v19.annotation.gtf.gz .
 # Unzip the downloaded file
 gunzip gencode.v19.annotation.gtf.gz
 
+# ----- REGIONAL COUNTS --------
+
 # Exon, gene and TSS coordinates are extracted and merged by strand respectively using bedtools 2.27 merge. The gene symbol is kept.
 # Sorting is always useful before using bedtools (even if you suspect, but not 100% sure that your file is already sorted).
-cat gencode.v19.annotation.gtf | awk '{if($3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' | sort -k1,1 -k2,2n > exon_srt_gencode19.bed
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' | sort -k1,1 -k2,2n > gene_srt_gencode19.bed
+cat gencode.v19.annotation.gtf | awk '{if($3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
+sort -k1,1 -k2,2n > exon_srt_gencode19.bed
+cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
+sort -k1,1 -k2,2n > gene_srt_gencode19.bed
 # for transcript start site, the strandedness is important:
 # if the transcript is on the - strand, the higher coordinate is the TSS on the reference genome
 cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="transcript")\
 {if($7=="-"){print $1 "\t" $5-2500 "\t" $5+2500 "\t" $18 "\t0\t" $7}else{print $1 "\t" $4-2500 "\t" $4+2500 "\t" $18 "\t0\t" $7}}}'\
 | sort -k1,1 -k2,2n > tss_srt_gencode19.bed
-
-# Create dataset of the +/-3kb region from the genebody for enrichment analysis
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' |\
-awk '{if($2<0){print $1 "\t0\t" $3 "\t" $4 "\t" $5 "\t" $6}else{print $0}}' | sort -k1,1 -k2,2n > upstr_gene_srt_gencode19.bed
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' |\
-sort -k1,1 -k2,2n > dwnstr_gene_srt_gencode19.bed
 
 # Merge without respect of strandedness and keeping the gene symbol for the total DSB counts per region
 bedtools merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
@@ -50,7 +48,46 @@ cat sumbp.tsv | paste - - > total_length.tsv
 rm sumbp.tsv
 
 
+# ----- ENRICHMENT ANALYSIS --------
+
+# Create dataset of the +/-3kb region from the genebody for enrichment analysis
+cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' |\
+awk '{if($2<0){print $1 "\t0\t" $3 "\t" $4 "\t" $5 "\t" $6}else{print $0}}' | sort -k1,1 -k2,2n > dwnstr_gene_srt_gencode19.bed
+cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' |\
+sort -k1,1 -k2,2n > upstr_gene_srt_gencode19.bed
+
+# Make different files for - or + strand
+# plus upstream = upstream
+# plus downstream = downstream
+# minus upstream = downstream & reversed
+# minus downstream = upstream & reversed
+cat upstr_gene_srt_gencode19.bed | awk '{if($6=="-"){print $0}}' > minus_upstr_gencode19.bed
+cat upstr_gene_srt_gencode19.bed | awk '{if($6=="+"){print $0}}' > plus_upstr_gencode19.bed
+cat dwnstr_gene_srt_gencode19.bed | awk '{if($6=="-"){print $0}}' > minus_dwnstr_gencode19.bed
+cat dwnstr_gene_srt_gencode19.bed | awk '{if($6=="+"){print $0}}' > plus_dwnstr_gencode19.bed
+cat gene_srt_gencode19.bed | awk '{if($6=="-"){print $0}}' > minus_gene_gencode19.bed
+cat gene_srt_gencode19.bed | awk '{if($6=="+"){print $0}}' > plus_gene_gencode19.bed
+
+# Create fixed size (100nt) sliding windows in these up- and downstream regions respecting the strandedness
+# bedpath= ... in case you have no sudo right and bedtools is in a user folder
+$bedpath"bedtools" makewindows -b plus_upstr_gencode19.bed -w 100 > upstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_upstr_gencode19.bed -reverse -w 100 > dwnstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b plus_dwnstr_gencode19.bed -w 100 >> dwnstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_dwnstr_gencode19.bed -reverse -w 100 >> upstr_w100_g19.bed
+
+# because sorting is good
+sort -k1,1 -k2,2n upstr_w100_g19.bed > upstr_srt_w100_g19.bed
+sort -k1,1 -k2,2n dwnstr_w100_g19.bed > dwnstr_srt_w100_g19.bed
+
+# Create fixed number (100) sliding window in gene bodies
+$bedpath"bedtools" makewindows -b plus_gene_gencode19.bed -n 100 > plus_gene_n100_g19.bed
+$bedpath"bedtools" makewindows -b minus_gene_gencode19.bed -reverse -n 100 > minus_gene_n100_g19.bed
+
+# WARNING: Interval chr1:147706573-147706607 is smaller than the number of windows requested. Skipping.
+# These are very short genes, so I just ignored them
+
 # ------------------- second part: region information intersection with DSB data ----------------------
+
 
 # step in the folder where you have your UMI-filtered bed files
 cd $myfolder
@@ -70,6 +107,8 @@ done
 # bedpath= ... in case you have no sudo right and bedtools is in a user folder
 
 mkdir -p ../exon_gene_counts
+
+# ----- REGIONAL COUNTS --------
 
 for file in *exp.bed;\
 do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
@@ -103,15 +142,16 @@ echo "tss";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"tss_srt_gencode19.bed" -b $file >$name"_c_tss.bed";\
 done
 
-# and the same again for upstream and downstream regions of gene bodies
+
+# ----- ENRICHMENT ANALYSIS --------
 
 for file in *exp.bed;\
 do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
 echo $name;\
 echo "upstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"upstr_gene_srt_gencode19.bed" -b $file >$name"_upstr.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"upstr_srt_w100_g19.bed" -b $file >$name"_upstr.bed";\
 echo "downstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"dwnstr_gene_srt_gencode19.bed" -b $file >$name"_dwnstr.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"dwnstr_srt_w100_g19.bed" -b $file >$name"_dwnstr.bed";\
 done
 
 
