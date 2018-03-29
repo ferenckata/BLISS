@@ -11,6 +11,7 @@ Currently there are two main paths:
   
 2. Chromosome-wide plotting of DSBs
   - plotting DSBs along the genome with karyogram
+  - plotting DSB distribution per dataset
   
   _Will include: circos plotting of DSBs_
   
