@@ -70,14 +70,10 @@ cat gene_srt_gencode19.bed | awk '{if($6=="+"){print $0}}' > plus_gene_gencode19
 
 # Create fixed size (100nt) sliding windows in these up- and downstream regions respecting the strandedness
 # bedpath= ... in case you have no sudo right and bedtools is in a user folder
-$bedpath"bedtools" makewindows -b plus_upstr_gencode19.bed -w 100 > upstr_w100_g19.bed
-$bedpath"bedtools" makewindows -b minus_upstr_gencode19.bed -reverse -w 100 > dwnstr_w100_g19.bed
-$bedpath"bedtools" makewindows -b plus_dwnstr_gencode19.bed -w 100 >> dwnstr_w100_g19.bed
-$bedpath"bedtools" makewindows -b minus_dwnstr_gencode19.bed -reverse -w 100 >> upstr_w100_g19.bed
-
-# because sorting is good
-sort -k1,1 -k2,2n upstr_w100_g19.bed > upstr_srt_w100_g19.bed
-sort -k1,1 -k2,2n dwnstr_w100_g19.bed > dwnstr_srt_w100_g19.bed
+$bedpath"bedtools" makewindows -b plus_upstr_gencode19.bed -w 100 > plus_upstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_upstr_gencode19.bed -reverse -w 100 > minus_upstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b plus_dwnstr_gencode19.bed -w 100 > plus_dwnstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_dwnstr_gencode19.bed -reverse -w 100 > minus_dwnstr_w100_g19.bed
 
 # Create fixed number (100) sliding window in gene bodies
 $bedpath"bedtools" makewindows -b plus_gene_gencode19.bed -n 100 > plus_gene_n100_g19.bed
@@ -149,9 +145,11 @@ for file in *exp.bed;\
 do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
 echo $name;\
 echo "upstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"upstr_srt_w100_g19.bed" -b $file >$name"_upstr_cov.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"plus_upstr_w100_g19.bed" -b $file >$name"_p_upstr_cov.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"minus_upstr_w100_g19.bed" -b $file >$name"_m_upstr_cov.bed";\
 echo "downstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"dwnstr_srt_w100_g19.bed" -b $file >$name"_dwnstr_cov.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"plus_dwnstr_w100_g19.bed" -b $file >$name"_p_dwnstr_cov.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"minus_dwnstr_w100_g19.bed" -b $file >$name"_m_dwnstr_cov.bed";\
 echo "genebody";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"plus_gene_n100_g19.bed" -b $file >$name"_p_gene_cov.bed";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"minus_gene_n100_g19.bed" -b $file >$name"_m_gene_cov.bed";\
