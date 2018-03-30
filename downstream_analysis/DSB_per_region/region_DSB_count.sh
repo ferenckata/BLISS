@@ -149,9 +149,12 @@ for file in *exp.bed;\
 do name=$(echo ../exon_gene_counts/$file | cut -d"_" -f1-4);\
 echo $name;\
 echo "upstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"upstr_srt_w100_g19.bed" -b $file >$name"_upstr.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"upstr_srt_w100_g19.bed" -b $file >$name"_upstr_cov.bed";\
 echo "downstream";\
-$bedpath"bedtools" coverage -counts -a $gencodepath"dwnstr_srt_w100_g19.bed" -b $file >$name"_dwnstr.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"dwnstr_srt_w100_g19.bed" -b $file >$name"_dwnstr_cov.bed";\
+echo "genebody";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"plus_gene_n100_g19.bed" -b $file >$name"_p_gene_cov.bed";\
+$bedpath"bedtools" coverage -counts -a $gencodepath"minus_gene_n100_g19.bed" -b $file >$name"_m_gene_cov.bed";\
 done
 
 
