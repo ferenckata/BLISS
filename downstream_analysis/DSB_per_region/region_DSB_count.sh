@@ -51,8 +51,9 @@ rm sumbp.tsv
 # ----- ENRICHMENT ANALYSIS --------
 
 # Create dataset of the +/-3kb region from the genebody for enrichment analysis
+# remove the genes that are closer than 3kb to the chromosome end, because it would mess up the calculations downstream
 cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' |\
-awk '{if($2<0){print $1 "\t0\t" $3 "\t" $4 "\t" $5 "\t" $6}else{print $0}}' | sort -k1,1 -k2,2n > dwnstr_gene_srt_gencode19.bed
+awk '{if($2>=0){print $0}}' | sort -k1,1 -k2,2n > dwnstr_gene_srt_gencode19.bed
 cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' |\
 sort -k1,1 -k2,2n > upstr_gene_srt_gencode19.bed
 
