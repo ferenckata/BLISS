@@ -71,13 +71,13 @@ cat gene_srt_gencode19.bed | awk '{if($6=="+"){print $0}}' > plus_gene_gencode19
 # Create fixed size (100nt) sliding windows in these up- and downstream regions respecting the strandedness
 # bedpath= ... in case you have no sudo right and bedtools is in a user folder
 $bedpath"bedtools" makewindows -b plus_upstr_gencode19.bed -w 100 > plus_upstr_w100_g19.bed
-$bedpath"bedtools" makewindows -b minus_upstr_gencode19.bed -reverse -w 100 > minus_upstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_upstr_gencode19.bed -w 100 > minus_upstr_w100_g19.bed
 $bedpath"bedtools" makewindows -b plus_dwnstr_gencode19.bed -w 100 > plus_dwnstr_w100_g19.bed
-$bedpath"bedtools" makewindows -b minus_dwnstr_gencode19.bed -reverse -w 100 > minus_dwnstr_w100_g19.bed
+$bedpath"bedtools" makewindows -b minus_dwnstr_gencode19.bed -w 100 > minus_dwnstr_w100_g19.bed
 
 # Create fixed number (100) sliding window in gene bodies
 $bedpath"bedtools" makewindows -b plus_gene_gencode19.bed -n 100 > plus_gene_n100_g19.bed
-$bedpath"bedtools" makewindows -b minus_gene_gencode19.bed -reverse -n 100 > minus_gene_n100_g19.bed
+$bedpath"bedtools" makewindows -b minus_gene_gencode19.bed -n 100 > minus_gene_n100_g19.bed
 
 # WARNING: Interval chr1:147706573-147706607 is smaller than the number of windows requested. Skipping.
 # These are very short genes, so I just ignored them
