@@ -15,8 +15,38 @@ i = 0
 
 # # # # # # # # INDIVIDUAL DATASETS # # # # # # #
 
-# one can include more colors here and more IDs in the idList if there are more than 4 datasets
-dsbCol = c("darkgreen","palegreen","gold","steelblue3")
+png(paste(outpath,"all_dsb_vs_genelength.png",sep=""))
+par(mfrow=c(3,2)) # depending on the number of datasets
+
+for(infile in files){
+  i = i+1
+  
+  # read non merged files and store the counts per gene
+  runid = unlist(strsplit(infile,"_",fixed = T))[1]
+  print(runid)
+  nm = paste(gepath,runid,"_c_gene.bed",sep="")
+  
+  nmc = read.delim(nm,header = F,sep="\t",as.is = T)
+  #colnm = dsbCol[runid]
+  
+  # plotting the number of DSBs vs the gene length
+
+    plot(nmc[which(nmc$V7>0),3]-nmc[which(nmc$V7>0),2],nmc[which(nmc$V7>0),7],
+         ylab = "DBS counts per gene",xlab = "gene length",main = runid,
+         ylim=c(0,24000),pch=20,cex=0.5)
+  # calculate correlation
+  print("the correlation is:")
+  print(cor(nmc[which(nmc$V7>0),3]-nmc[which(nmc$V7>0),2], nmc[which(nmc$V7>0),7]))
+  # build linear regression model
+  dsbgenel = lm(nmc[which(nmc$V7>0),3]-nmc[which(nmc$V7>0),2] ~ nmc[which(nmc$V7>0),7])
+  print(summary(dsbgenel))
+}  
+dev.off()
+
+
+# # # If you prefer colored dots on top of each other for comparison  # # #
+# one can include more colors here and more IDs in the idList if there are more than 5 datasets
+dsbCol = c("darkgreen","palegreen","gold","steelblue3","yellow")
 names(dsbCol) = idList
 
 for(infile in files){
@@ -35,15 +65,15 @@ for(infile in files){
     png(paste(outpath,"all_dsb_vs_genelength.png",sep=""))
     plot(nmc[which(nmc$V7>0),3]-nmc[which(nmc$V7>0),2],nmc[which(nmc$V7>0),7],
          ylab = "DBS counts per gene",xlab = "gene length",main = "DSB vs gene length",
-         ylim=c(0,24000),col= colnm,pch=16)
+         ylim=c(0,24000),col= colnm,pch=20,cex=0.5)
   }else{
     points(nmc[which(nmc$V7>0),3]-nmc[which(nmc$V7>0),2],nmc[which(nmc$V7>0),7],
-           col= colnm,pch=16)
+           col= colnm,pch=20,cex=0.5)
   }
 }  
 dev.off()
 
-
+# # # If you see outliers, they can be found with boxplot # # #
 # ---------- boxplot ---------------
 par(mfrow=c(2,2))
 i=0
