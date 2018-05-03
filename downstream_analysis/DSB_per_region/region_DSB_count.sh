@@ -97,8 +97,12 @@ cd $myfolder
 for file in *UMI.bed;\
 do name=$(echo $file | cut -d"_" -f1);\
 echo $name;\
-cat $file | awk '{for(i=1;i<=$4;i++) print $0}' >$name"_exp.bed";\
+cat $file | awk '{for(i=1;i<=$4;i++) print "chr" $0}' >$name"_exp.bed";\
 done
+
+# NOTE: this script above add a "chr" prefix to the chromsome name, if it already has one, the 4th line should look like this instead:
+# cat $file | awk '{for(i=1;i<=$4;i++) print $0}' >$name"_exp.bed";\
+
 # now coverage can be used
 # gencodepath= ... the path to the previously prepared genecode stuff
 # bedpath= ... in case you have no sudo right and bedtools is in a user folder
