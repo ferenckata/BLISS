@@ -10,9 +10,9 @@ chromsize = ''
 # store chromosome sizes
 print("loading chromosome file...")
 chrom_size <- read.delim(chromsize,header = F)
-files=mixedsort(list.files(inpath,pattern = ".bed"))
+files=mixedsort(list.files(inpath,pattern = "UMI.bed"))
 
-outfile = paste(outpath,"DSB_vs_chrlength.png",sep="")
+outfile = paste(outpath,"DSB_vs_chrlength.pdf",sep="")
 DSBnum = matrix(data = NA,nrow = 24,ncol = 4)
 i = 0
 for(infile in files){
@@ -33,6 +33,6 @@ DSBdf$X1<-as.integer(DSBnum[,1])
 DSBdf$X2<-as.integer(DSBnum[,2])
 
 print("plotting...")
-png(outfile,width=600,height = 600)
+pdf(outfile,width=600,height = 600)
 ggplot(data=DSBdf,aes(DSBdf$X1,DSBdf$X2)) + geom_point() + geom_text(aes(label=DSBdf$X3),hjust=0.7,vjust=-0.9) + labs(x="Chromosome length",y="DSB number") + theme(panel.grid.major = element_blank(),panel.grid.minor = element_blank(),panel.background = element_blank(),axis.line = element_line(colour = "black"))
 dev.off()
