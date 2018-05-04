@@ -3,13 +3,13 @@ library(plyr)
 
 # plot dsb number vs gene length in four color for four different files
 
-userpath = "~/Documents/bliss/MCF7/MCF7_BICRO63/mapped_filtered/"
-gepath = "~/Documents/bliss/MCF7/MCF7_BICRO63/rtest/exon_gene_counts/"
-normfile = "~/Documents/gene_db/hg19/total_length.tsv"
-outpath = "~/Documents/bliss/MCF7/MCF7_BICRO63/rtest/"
+userpath = ""
+gepath = ""
+normfile = ""
+outpath = ""
 
 files = list.files(path=userpath,pattern = "exp.bed")
-idList = c("RM118","RM119","RM120","RM121")
+idList = c("ID1","ID2","ID3","ID4")
 
 i = 0
 
@@ -42,27 +42,23 @@ for(infile in files){
   minth = quantile(outlier$V7,probs = 0)
   
   pdf(paste(runid,"_scatterplot.pdf",sep = ""))
-  par(mfrow=c(2,1))
   
-  plot(nmc[which(nmc$V7<minth),3]-nmc[which(nmc$V7<minth),2],nmc[which(nmc$V7<minth),7],
-       ylab = "DBS counts per gene",xlab = "gene length",main = runid,pch=20,cex=0.5)
+  scatter.smooth(nmc$V3-nmc$V2,nmc$V7,
+       ylab = "DBS counts per gene",
+       xlab = "gene length",main = runid,pch=20,cex=0.5)
   
+  # plot(nmc$V3-nmc$V2,nmc$V7,ylab = "DBS counts per gene",xlab = "gene length",main = runid,pch=20,cex=0.5)
   # abline(lm(nmc[which(nmc$V7<minth),3]-nmc[which(nmc$V7<minth),2]~nmc[which(nmc$V7<minth),7]),col="red")
   # NOTE : the abline seems a good idea, but the values around 0 are usually so many that it looks weird
   # better to use scatter.smooth that also plots the dots
-  # 
-  
-  plot(outlier$V3-outlier$V2,outlier$V7,
-       ylab = "DBS counts per gene",xlab = "gene length",main = runid,pch=20,cex=0.5)
-  abline(lm(outlier$V3-outlier$V2 ~ outlier$V7),col="red")
   
   dev.off()
   
   # calculate correlation
-  sprintf("The correlation between DSB number and gene length in the outlier genes is %f",
-         cor(outlier$V3-outlier$V2,outlier$V7))
+  sprintf("The correlation between DSB number and gene length in the genes is %f",
+         cor(nmc$V3-nmc$V2,nmc$V7))
   # report linear regression model
-  print(summarylm(outlier$V3-outlier$V2 ~ outlier$V7))
+  print(summarylm(nmc$V3-nmc$V2 ~ nmc$V7))
   
   # get GO terms for the outlier genes
   mymart = useMart("ensembl","hsapiens_gene_ensembl")
@@ -71,12 +67,13 @@ for(infile in files){
                   filters = 'hgnc_symbol',
                    values = outlier$V4,
                    mart = mymart)
-  write.table(goforols,file = "fragile_gene_GO.tsv",quote = F,sep = "\t",row.names = F,col.names = c("gene symbols","GO term"))
+  write.table(goforols,file = paste(runid,"fragile_gene_GO.tsv",sep=""),quote = F,sep = "\t",
+              row.names = F,col.names = c("gene symbols","GO term"))
   # sort by GO frequency
   gofreq = count(goforols,vars = 'name_1006')
   gofreq = gofreq[order(-gofrec$freq),]
   # save GO counts
-  write.table(gofreq,file="fragile_gene_GOfreq.tsv",quote = F,sep='\t',row.names = F,col.names = T)
+  write.table(gofreq,file=paste(runid,"fragile_gene_GOfreq.tsv",sep=""),quote = F,sep='\t',row.names = F,col.names = T)
 }
 
 
