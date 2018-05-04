@@ -11,8 +11,6 @@ outpath = ""
 files = list.files(path=userpath,pattern = "exp.bed")
 idList = c("ID1","ID2","ID3","ID4")
 
-i = 0
-
 par(mfrow=c(1,1))
 i=0
 for(infile in files){
