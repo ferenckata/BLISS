@@ -14,6 +14,15 @@ echo $chrn;\
 bedtools makewindows -g $file -w 10000 >w1kb_allhg19/$chrn"_w10kb.bed";\
 done 
 
+for file in ../../milan/*exp.bed;\
+do name=$(echo $file | cut -d"/" -f4 | cut -d"_" -f1);\
+echo $name;\
+for chrc in *.bed;\
+do chrnum=$(echo $chrc| cut -d"_" -f1);\
+echo $chrnum;\
+~/Applications/bedtools2/bin/bedtools coverage -counts -a $chrc -b $file > ../../nz/$name"_"$chrnum"_10kb_cov.bed";\
+done;\
+done
 
 ```
 
