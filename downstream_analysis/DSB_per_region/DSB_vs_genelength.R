@@ -9,10 +9,10 @@ normfile = ""
 outpath = ""
 
 files = list.files(path=userpath,pattern = "exp.bed")
-idList = c("ID1","ID2","ID3","ID4")
+idList = c("ID1","ID2","ID3","ID4","ID5")
 
-par(mfrow=c(1,1))
 i=0
+par(mfrow=c(1,1))
 for(infile in files){
   i = i+1
   # read non merged files and store the counts per gene
@@ -24,10 +24,10 @@ for(infile in files){
   print(summary(nmc$V7))
   thrh = quantile(nmc$V7,probs = 0.75)
   
-  pdf(paste(runid,"_boxplot.pdf",sep=""))
+  pdf(paste(outpath,runid,"_boxplot.pdf",sep=""))
   # plotting the number of DSBs vs the gene length
   boxplot(nmc$V7/abs((nmc$V3-nmc$V2)),main=runid,
-          data=nmc,names=runid,col = colnm)
+          data=nmc,names=runid)
   dev.off()
   
   # find outliers, plot them and calculate linear regression for them
@@ -37,11 +37,11 @@ for(infile in files){
   print(summary(outlier$V7))
   minth = quantile(outlier$V7,probs = 0)
   
-  pdf(paste(runid,"_scatterplot.pdf",sep = ""))
+  pdf(paste(outpath,runid,"_scatterplot.pdf",sep = ""))
   
   scatter.smooth(nmc$V3-nmc$V2,nmc$V7,
-       ylab = "DBS counts per gene",
-       xlab = "gene length",main = runid,pch=20,cex=0.5)
+                 ylab = "DBS counts per gene",
+                 xlab = "gene length",main = runid,pch=20,cex=0.5)
   
   # plot(nmc$V3-nmc$V2,nmc$V7,ylab = "DBS counts per gene",xlab = "gene length",main = runid,pch=20,cex=0.5)
   # abline(lm(nmc[which(nmc$V7<minth),3]-nmc[which(nmc$V7<minth),2]~nmc[which(nmc$V7<minth),7]),col="red")
@@ -52,26 +52,25 @@ for(infile in files){
   
   # calculate correlation
   sprintf("The correlation between DSB number and gene length in the genes is %f",
-         cor(nmc$V3-nmc$V2,nmc$V7))
+          cor(nmc$V3-nmc$V2,nmc$V7))
   # report linear regression model
-  print(summarylm(nmc$V3-nmc$V2 ~ nmc$V7))
+  print(summary(lm(nmc$V3-nmc$V2 ~ nmc$V7)))
   
   # get GO terms for the outlier genes
   mymart = useMart("ensembl","hsapiens_gene_ensembl")
   listAttributes(mymart)
   goforols = getBM(attributes = c('hgnc_symbol','name_1006'),
-                  filters = 'hgnc_symbol',
+                   filters = 'hgnc_symbol',
                    values = outlier$V4,
                    mart = mymart)
-  write.table(goforols,file = paste(runid,"fragile_gene_GO.tsv",sep=""),quote = F,sep = "\t",
+  write.table(goforols,file = paste(outpath,runid,"_fragile_gene_GO.tsv",sep=""),quote = F,sep = "\t",
               row.names = F,col.names = c("gene symbols","GO term"))
   # sort by GO frequency
   gofreq = count(goforols,vars = 'name_1006')
-  gofreq = gofreq[order(-gofrec$freq),]
+  gofreq = gofreq[order(-gofreq$freq),]
   # save GO counts
-  write.table(gofreq,file=paste(runid,"fragile_gene_GOfreq.tsv",sep=""),quote = F,sep='\t',row.names = F,col.names = T)
+  write.table(gofreq,file=paste(outpath,runid,"_fragile_gene_GOfreq.tsv",sep=""),quote = F,sep='\t',row.names = F,col.names = T)
 }
-
 
 # # # If you prefer colored dots on top of each other for comparison  # # #
 
