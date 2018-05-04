@@ -5,7 +5,7 @@ library(gtools)
 
 inpath = ''
 outpath = ''
-chromsize = '
+chromsize = ''
 
 # store chromosome sizes
 print("loading chromosome file...")
