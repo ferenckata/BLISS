@@ -31,6 +31,8 @@ chr10	4500	5500
 ```
 
 Note: Depending on the `chr_lenght.tsv` input it can cover one or more chromosome. I create this per chromosome, so the input has only one line: `chr10	135534747`.
+(To do so, you may use this line:
+` cat chr_lengths.tsv | while read line;do echo $line;chrn=$(echo $line | cut -d" " -f 1);echo $chrn;echo $line > $chrn".bed";done `)
 
 2. "Expanding" bedgraph file 
 The output of the current mapping pipeline is a bedgraph file.
