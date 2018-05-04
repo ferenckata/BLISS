@@ -4,7 +4,12 @@ My latest information (04.05.2018) is to download from here: https://portal.gdc.
 
 ### 2. Copy number variation
 
-The open datasets are based on SNPs and already segmented. It means that the breakpoints are rather "breakregions" with the length of approx 1-10kb between consecutive regions with diffrent copy numbers.
+The open datasets are based on SNPs and already segmented. It means that the breakpoints are rather "breakregions" with the length of approx 1-10kb between consecutive regions with diffrent copy numbers. To get the breakregions, `breakpoint_finder.py` code is used that extracts the regions between consecutive regions with diffrent copy numbers from all datasts.
+
+Than, `bedtools makewindws` and `bedtools coverage` are used to find the number of breakregions across datasets per 10kb, that is to find the recurrent breaklocations. 
+
+
+### 3. Prepare BLISS output
 
 For comparison, the resolution of the DSB distribution should be also in this range. that can be done like this:
 ```
