@@ -20,7 +20,6 @@ for(infile in files){
   nm = paste(gepath,runid,"_c_gene.bed",sep="")
   
   nmc = read.delim(nm,header = F,sep="\t",as.is = T)
-  colnm = dsbCol[runid]
   
   print(summary(nmc$V7))
   thrh = quantile(nmc$V7,probs = 0.75)
