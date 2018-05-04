@@ -26,7 +26,6 @@ for(infile in files){
   thrh = quantile(nmc$V7,probs = 0.75)
   
   pdf(paste(runid,"_boxplot.pdf",sep=""))
-  par(mfrow=c(1,1))
   # plotting the number of DSBs vs the gene length
   boxplot(nmc$V7/abs((nmc$V3-nmc$V2)),main=runid,
           data=nmc,names=runid,col = colnm)
