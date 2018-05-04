@@ -29,5 +29,14 @@ echo $chrnum;\
 done;\
 done
 
+for file in *.bed;\
+do name=$(echo $file | cut -d"_" -f1-2);\
+echo $name;\
+ID=$(echo $name | cut -d"_" -f1);\
+cat $file | awk -v ID="$ID" '{if($4>0){print $0 "\t" ID}}' > ../nz/$name"_nz_cov.bed" ;\
+done
+
+cat *nz_cov.bed >$ID"_allchr_10kb.bed"
+
 ```
 
