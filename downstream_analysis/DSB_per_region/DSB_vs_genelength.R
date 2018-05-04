@@ -32,6 +32,7 @@ for(infile in files){
   
   # find outliers, plot them and calculate linear regression for them
   outlier = nmc[which(nmc$V7>thrh),]
+  outlier$V4 = gsub(";","",outlier$V4)
   sprintf("There are %s outliers in %s dataset.",as.character(dim(outlier)[1]),runid)
   
   print(summary(outlier$V7))
@@ -39,14 +40,15 @@ for(infile in files){
   
   pdf(paste(outpath,runid,"_scatterplot.pdf",sep = ""))
   
-  scatter.smooth(nmc$V3-nmc$V2,nmc$V7,
-                 ylab = "DBS counts per gene",
-                 xlab = "gene length",main = runid,pch=20,cex=0.5)
+  scatter.smooth(nmc$V3-nmc$V2,nmc$V7,ylab = "DBS counts per gene",
+                 xlab = "gene length",main = runid,pch=20,cex=0.5,
+                 lpars=list(col="red",lwd=2))
   
   # plot(nmc$V3-nmc$V2,nmc$V7,ylab = "DBS counts per gene",xlab = "gene length",main = runid,pch=20,cex=0.5)
   # abline(lm(nmc[which(nmc$V7<minth),3]-nmc[which(nmc$V7<minth),2]~nmc[which(nmc$V7<minth),7]),col="red")
   # NOTE : the abline seems a good idea, but the values around 0 are usually so many that it looks weird
-  # better to use scatter.smooth that also plots the dots
+  # looks better to use scatter.smooth that also plots the dots
+  # BUT it may not be the statistically sound approach
   
   dev.off()
   
@@ -55,6 +57,11 @@ for(infile in files){
           cor(nmc$V3-nmc$V2,nmc$V7))
   # report linear regression model
   print(summary(lm(nmc$V3-nmc$V2 ~ nmc$V7)))
+  
+  # save outlier genes
+  write.table(outlier,file = paste(outpath,runid,"_fragile_gene.tsv",sep=""),
+              quote = F,sep = "\t",
+              row.names = F,col.names = c("chromosome","start","end","gene symbols","NA","strand","DSB count"))
   
   # get GO terms for the outlier genes
   mymart = useMart("ensembl","hsapiens_gene_ensembl")
