@@ -29,9 +29,9 @@ cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="tra
 | sort -k1,1 -k2,2n > tss_srt_gencode19.bed
 
 # Merge without respect of strandedness and keeping the gene symbol for the total DSB counts per region
-bedtools merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
-bedtools merge -i gene_srt_gencode19.bed -c 4 -o distinct > gene_srt_m_gencode19.bed
-bedtools merge -i tss_srt_gencode19.bed -c 4 -o distinct > tss_srt_m_gencode19.bed
+$bedpath"bedtools" merge -i exon_srt_gencode19.bed -c 4 -o distinct > exon_srt_m_gencode19.bed
+$bedpath"bedtools" merge -i gene_srt_gencode19.bed -c 4 -o distinct > gene_srt_m_gencode19.bed
+$bedpath"bedtools" merge -i tss_srt_gencode19.bed -c 4 -o distinct > tss_srt_m_gencode19.bed
 
 # Additionally the total length of genes, exons and TSS is caculated and stored for further analysis
 echo "total" >> sumbp.tsv
