@@ -18,9 +18,9 @@ gunzip gencode.v19.annotation.gtf.gz
 
 # Exon, gene and TSS coordinates are extracted and merged by strand respectively using bedtools 2.27 merge. The gene symbol is kept.
 # Sorting is always useful before using bedtools (even if you suspect, but not 100% sure that your file is already sorted).
-cat gencode.v19.annotation.gtf | awk '{if($3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
+cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="exon"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
 sort -k1,1 -k2,2n > exon_srt_gencode19.bed
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
+cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="gene"){print $1 "\t" $4 "\t" $5 "\t" $18 "\t0\t" $7}}' |\
 sort -k1,1 -k2,2n > gene_srt_gencode19.bed
 # for transcript start site, the strandedness is important:
 # if the transcript is on the - strand, the higher coordinate is the TSS on the reference genome
@@ -52,9 +52,9 @@ rm sumbp.tsv
 
 # Create dataset of the +/-3kb region from the genebody for enrichment analysis
 # remove the genes that are closer than 3kb to the chromosome end, because it would mess up the calculations downstream
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' |\
+cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="gene"){print $1 "\t" $4-3000 "\t" $4 "\t" $18 "\t0\t" $7}}' |\
 awk '{if($2>=0){print $0}}' | sort -k1,1 -k2,2n > upstr_gene_srt_gencode19.bed
-cat gencode.v19.annotation.gtf | awk '{if($3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' |\
+cat gencode.v19.annotation.gtf | awk '{if($20=="\"protein_coding\";" && $3=="gene"){print $1 "\t" $5 "\t" $5+3000 "\t" $18 "\t0\t" $7}}' |\
 sort -k1,1 -k2,2n > dwnstr_gene_srt_gencode19.bed
 
 # Make different files for - or + strand
@@ -159,7 +159,6 @@ echo "genebody";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"plus_gene_n100_g19.bed" -b $file >$name"_p_gene_cov.bed";\
 $bedpath"bedtools" coverage -counts -a $gencodepath"minus_gene_n100_g19.bed" -b $file >$name"_m_gene_cov.bed";\
 done
-
 
 # ------------------- third part: plotting ----------------------
 
