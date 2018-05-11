@@ -133,4 +133,4 @@ cat random_points.bed | awk '{print $1 "\t" $3+30000 "\t" $3+40000 "\t" $4}' > r
 cat random_points.bed | awk '{print $1 "\t" $3+20000 "\t" $3+30000 "\t" $4}' > random_p20-30_cov.bed
 cat random_points.bed | awk '{print $1 "\t" $3+10000 "\t" $3+20000 "\t" $4}' > random_p10-20_cov.bed
 cat random_points.bed | awk '{print $1 "\t" $3 "\t" $3+10000 "\t" $4}' > random_p0-10_cov.bed
-
+```
