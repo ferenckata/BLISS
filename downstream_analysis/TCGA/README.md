@@ -154,6 +154,9 @@ cat random_points.bed | awk '{print $1 "\t" $3 "\t" $3+10000 "\t" $4}' > random_
 ```
 
 Note: sometimes it generates invalid records since the breakpoint or the random bed can be close to the end of the genome.
+You can remove them with this line (save to another folder):
+` for file in random_*;do echo $file; cat $file | awk '{if($2>=0 && $3>=0) print}' > forplot/$file;done `
+
 
 Intersect these with DSBs.
 
