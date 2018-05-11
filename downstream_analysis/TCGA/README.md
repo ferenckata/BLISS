@@ -121,4 +121,16 @@ The `TCGA_breakpoint_enrichment.R` script does the plotting as well. It expects 
 
 To generate a random bed file use this command:
 ` $bedpath"bedtools" random -l 1000 -n 30478 -g .hg38_chrlength.tsv >random_points.bed `
+And to the same as before:
+```
+cat random_points.bed | awk '{print $1 "\t" $2-10000 "\t" $2 "\t" $4}' > random_m0-10_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $2-20000 "\t" $2-10000 "\t" $4}' > random_m10-20_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $2-30000 "\t" $2-20000 "\t" $4}' > random_m20-30_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $2-40000 "\t" $2-30000 "\t" $4}' > random_m30-40_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $2-50000 "\t" $2-40000 "\t" $4}' > random_m40-50_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $3+40000 "\t" $3+50000 "\t" $4}' > random_p40-50_cov.bed    
+cat random_points.bed | awk '{print $1 "\t" $3+30000 "\t" $3+40000 "\t" $4}' > random_p30-40_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $3+20000 "\t" $3+30000 "\t" $4}' > random_p20-30_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $3+10000 "\t" $3+20000 "\t" $4}' > random_p10-20_cov.bed
+cat random_points.bed | awk '{print $1 "\t" $3 "\t" $3+10000 "\t" $4}' > random_p0-10_cov.bed
 
