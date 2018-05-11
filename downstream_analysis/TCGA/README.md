@@ -120,5 +120,5 @@ done
 The `TCGA_breakpoint_enrichment.R` script does the plotting as well. It expects the data to be in different folders for different datasets.
 
 To generate a random bed file use this command:
-` $bedpath"bedtools" random -l 1000 -n 30478 -g ../../../../../cnv_tcga/hg38_chrlength.tsv >random_points.bed `
+` $bedpath"bedtools" random -l 1000 -n 30478 -g .hg38_chrlength.tsv >random_points.bed `
 
