@@ -26,6 +26,7 @@ done
 The corrdinates should be lifted over to hg38 assembly. Here the local liftover tool is used with the corresponding chain file downloaded from [UCSC](http://hgdownload.cse.ucsc.edu/downloads.html). Note: before using liftover tool read [this](https://genome-store.ucsc.edu/)!
 
 First, the chromosome names should get"chr" prefix to match with the UCSC format. Than they can be overlifted.
+
 ```
 for file in *UMI.bed;\
 do name=$(echo $file | cut -d"_" -f1);\
@@ -36,6 +37,7 @@ done
 ```
 
 The file should be "expanded" and moved to a different folder to not to interfere with hg19 data
+
 ```
 for file in *hg38.bed;\
 do name=$(echo $file | cut -d"_" -f1);\
@@ -49,6 +51,7 @@ mv *hg38.bed hg38/
 ```
 
 DSB coverage per chromosome is calculated
+
 ```
 for file in ../*hg38_exp.bed;\
 do name=$(echo $file | cut -d"/" -f4 | cut -d"_" -f1);\
@@ -62,6 +65,7 @@ done
 ```
 
 Zero DSB counts are removed
+
 ```
 for file in *.bed;\
 do name=$(echo $file | cut -d"_" -f1-2);\
@@ -72,25 +76,35 @@ done
 ```
 
 Arrange conveniently each dataset to a corresponding folder (ID) and merge files of different chromosomes from the same dataset to one file, while "expanding" it again for bedtools. Also removing the ID because this time it is inconveniet to have.
+
 ` for dr in ID*;do cat $dr"/"*"nz_cov.bed" |awk '{for(i=1;i<=$4;i++) {print $1 "\t" $2 "\t" $3 "\t" $4}}' > "all_"$dr".bed";done `
 
 Use `breakpoint_finder.ipynb` to extract the breakregions from the downloaded TCGA samples. A file with the hg38 chromosome lengths is needed.
 
 Calculate coverage for all TCGA file on all chromsomes. First, 10kb long windows are made of hg38.
+
 ` $bedpath"bedtools" makewindows -g hg38.txt -w 10000 > allchr_hg38_w10kb.bed `
+
 If it starts with chr10 for whatever reason, do a sorting step.
+
 ` cat allchr_hg38_w10kb.bed | sort -k1,1 -k2,2n > hg38_srt_10kb.bed `
+
 Than calculate the coverage with bedtools ...
+
 ` cat breakregions/* | $bedpath"bedtools" coverage -counts -a hg38_srt_10kb.bed -b stdin > alltcga_hg38_cov_10kb.bed `
+
 ... and finally remove zero counts.
+
 ` cat alltcga_hg38_cov_10kb.bed | awk '{if($4>0) print}' >nz_tcga_hg38_10kb_cov.bed `
 
 Open `TCGA_breakpoint_enrichment.R` script and runt he first few command to have an overview on the data.
 
 Recurrent breakpoint is identified here as a 10kb region where at least 0.5% of the samples have breakpoint (in this case it is 7). 
+
 ` cat nz_tcga_hg38_10kb_cov.bed | awk '{if($4>7) print}' > tcga_min7_hg38_10kb_cov.bed `
 
 Create 10kb bins around the recurrent CN breakpoints.
+
 ```
 cat tcga_min7_hg38_10kb_cov.bed | awk '{print $1 "\t" $2-10000 "\t" $2 "\t" $4}' > tcga_min7_hg38_10kb_m0-10_cov.bed
 cat tcga_min7_hg38_10kb_cov.bed | awk '{print $1 "\t" $2-20000 "\t" $2-10000 "\t" $4}' > tcga_min7_hg38_10kb_m10-20_cov.bed
@@ -105,6 +119,7 @@ cat tcga_min7_hg38_10kb_cov.bed | awk '{print $1 "\t" $3 "\t" $3+10000 "\t" $4}'
 ```
 
 Intersect these with DSBs.
+
 ```
 for file in ../../hg38_deepseqcov/all*.bed;\
 do name=$(echo $file | cut -d"/" -f4 | cut -d"." -f1); \
@@ -120,8 +135,11 @@ done
 The `TCGA_breakpoint_enrichment.R` script does the plotting as well. It expects the data to be in different folders for different datasets.
 
 To generate a random bed file use this command:
+
 ` $bedpath"bedtools" random -l 1000 -n 30478 -g .hg38_chrlength.tsv >random_points.bed `
+
 And to the same as before:
+
 ```
 cat random_points.bed | awk '{print $1 "\t" $2-10000 "\t" $2 "\t" $4}' > random_m0-10_cov.bed
 cat random_points.bed | awk '{print $1 "\t" $2-20000 "\t" $2-10000 "\t" $4}' > random_m10-20_cov.bed
@@ -133,4 +151,20 @@ cat random_points.bed | awk '{print $1 "\t" $3+30000 "\t" $3+40000 "\t" $4}' > r
 cat random_points.bed | awk '{print $1 "\t" $3+20000 "\t" $3+30000 "\t" $4}' > random_p20-30_cov.bed
 cat random_points.bed | awk '{print $1 "\t" $3+10000 "\t" $3+20000 "\t" $4}' > random_p10-20_cov.bed
 cat random_points.bed | awk '{print $1 "\t" $3 "\t" $3+10000 "\t" $4}' > random_p0-10_cov.bed
+```
+
+Note: sometimes it generates invalid records since the breakpoint or the random bed can be close to the end of the genome.
+
+Intersect these with DSBs.
+
+```
+ for file in hg38_deepseqcov/all*.bed;\
+ do name=$(echo $file | cut -d"/" -f5 | cut -d"." -f1);\
+ echo $name;\
+ for rnd in ../*.bed;\
+ do rndn=$(echo $rnd | cut -d"_" -f2);\
+ echo $rndn;\
+ $bedpath"bedtools" coverage -counts -a $rnd -b $file > $name"_"$rndn"_cov.bed";\
+ done;\
+ done
 ```
