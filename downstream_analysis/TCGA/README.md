@@ -171,3 +171,7 @@ Intersect these with DSBs.
  done;\
  done
 ```
+
+
+### ALternatively
+Overlift and expand BLISS files, find recurrent TCGA breakregions (10kb), create windows of 1kb around it (+/-5kb), calculate coverage of expanded bliss files. Plot.
